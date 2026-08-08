@@ -1,4 +1,4 @@
-# KnowRAG
+# KnowRAG (Fact-Checking RAG)
 
 A fact-checking RAG system. It answers questions strictly from retrieved
 evidence and **rejects claims it cannot support**, instead of letting an LLM
