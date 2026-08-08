@@ -1,0 +1,143 @@
+[
+  {
+    "arm": "baseline",
+    "desc": "production verifier, no windowing",
+    "d1_rate": 0.0,
+    "d1_items": [],
+    "old_rate": 0.125,
+    "old_items": [
+      "adv-009",
+      "adv-011"
+    ],
+    "d4_rate": 1.0,
+    "fr_rate": 0.38461538461538464,
+    "fr_refused": 15,
+    "fr_answerable": 39,
+    "logical_calls": 66,
+    "claims_scored": 66,
+    "windowed": 0,
+    "won_by_window": 0,
+    "wall_seconds": 159.5,
+    "records_path": "/home/rahul-ringane/Projects/KnowRag/KnowRAG/eval/results/records-direction-c-baseline.json"
+  },
+  {
+    "arm": "c400",
+    "desc": "original prototype \u2014 400-char windows",
+    "d1_rate": 0.0,
+    "d1_items": [],
+    "old_rate": 0.3125,
+    "old_items": [
+      "adv-001",
+      "adv-002",
+      "adv-004",
+      "adv-009",
+      "adv-011"
+    ],
+    "d4_rate": 0.9375,
+    "fr_rate": 0.05128205128205128,
+    "fr_refused": 2,
+    "fr_answerable": 39,
+    "logical_calls": 1159,
+    "claims_scored": 66,
+    "windowed": 30,
+    "won_by_window": 26,
+    "wall_seconds": 293.7,
+    "records_path": "/home/rahul-ringane/Projects/KnowRag/KnowRAG/eval/results/records-direction-c-c400.json"
+  },
+  {
+    "arm": "c700",
+    "desc": "window floor 700",
+    "d1_rate": 0.0,
+    "d1_items": [],
+    "old_rate": 0.3125,
+    "old_items": [
+      "adv-001",
+      "adv-002",
+      "adv-004",
+      "adv-009",
+      "adv-011"
+    ],
+    "d4_rate": 0.9375,
+    "fr_rate": 0.05128205128205128,
+    "fr_refused": 2,
+    "fr_answerable": 39,
+    "logical_calls": 1159,
+    "claims_scored": 66,
+    "windowed": 30,
+    "won_by_window": 25,
+    "wall_seconds": 304.1,
+    "records_path": "/home/rahul-ringane/Projects/KnowRag/KnowRAG/eval/results/records-direction-c-c700.json"
+  },
+  {
+    "arm": "c900",
+    "desc": "window floor 900",
+    "d1_rate": 0.0,
+    "d1_items": [],
+    "old_rate": 0.3125,
+    "old_items": [
+      "adv-001",
+      "adv-002",
+      "adv-004",
+      "adv-009",
+      "adv-011"
+    ],
+    "d4_rate": 0.9375,
+    "fr_rate": 0.05128205128205128,
+    "fr_refused": 2,
+    "fr_answerable": 39,
+    "logical_calls": 1159,
+    "claims_scored": 66,
+    "windowed": 30,
+    "won_by_window": 25,
+    "wall_seconds": 298.5,
+    "records_path": "/home/rahul-ringane/Projects/KnowRag/KnowRAG/eval/results/records-direction-c-c900.json"
+  },
+  {
+    "arm": "cond700",
+    "desc": "floor 700 + only window chunks >900 chars",
+    "d1_rate": 0.0,
+    "d1_items": [],
+    "old_rate": 0.3125,
+    "old_items": [
+      "adv-001",
+      "adv-002",
+      "adv-004",
+      "adv-009",
+      "adv-011"
+    ],
+    "d4_rate": 0.9375,
+    "fr_rate": 0.07692307692307693,
+    "fr_refused": 3,
+    "fr_answerable": 39,
+    "logical_calls": 1152,
+    "claims_scored": 66,
+    "windowed": 28,
+    "won_by_window": 24,
+    "wall_seconds": 109.1,
+    "records_path": "/home/rahul-ringane/Projects/KnowRag/KnowRAG/eval/results/records-direction-c-cond700.json"
+  },
+  {
+    "arm": "cond900",
+    "desc": "floor 900 + only window chunks >900 chars",
+    "d1_rate": 0.0,
+    "d1_items": [],
+    "old_rate": 0.3125,
+    "old_items": [
+      "adv-001",
+      "adv-002",
+      "adv-004",
+      "adv-009",
+      "adv-011"
+    ],
+    "d4_rate": 0.9375,
+    "fr_rate": 0.07692307692307693,
+    "fr_refused": 3,
+    "fr_answerable": 39,
+    "logical_calls": 1152,
+    "claims_scored": 66,
+    "windowed": 28,
+    "won_by_window": 24,
+    "wall_seconds": 109.0,
+    "records_path": "/home/rahul-ringane/Projects/KnowRag/KnowRAG/eval/results/records-direction-c-cond900.json"
+  }
+]

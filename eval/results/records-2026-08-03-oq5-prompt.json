@@ -1,0 +1,2084 @@
+[
+  {
+    "id": "adv-001",
+    "category": "adjacent_absent",
+    "question": "What year was the Texas Instruments TMS 1000, the world's first microcontroller, released?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "The context does not specify the year the Texas Instruments TMS 1000 was released. [C1]",
+    "retrieved_chunk_ids": [
+      "1:24",
+      "1:13",
+      "1:25",
+      "1:3",
+      "1:29"
+    ],
+    "supported": [
+      {
+        "text": "The context does not specify the year the Texas Instruments TMS 1000 was released.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:24"
+        ],
+        "evidence_score": 0.9041982293128967
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "adv-002",
+    "category": "adjacent_absent",
+    "question": "How many system gates does a mid-range Xilinx Virtex FPGA provide?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "The largest FPGA now shipping, part of the Xilinx Virtex line of devices, provides eight million system gates. [C1]",
+    "retrieved_chunk_ids": [
+      "1:26",
+      "1:27",
+      "1:13",
+      "1:24",
+      "1:39"
+    ],
+    "supported": [
+      {
+        "text": "The largest FPGA now shipping, part of the Xilinx Virtex line of devices, provides eight million system gates.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:26"
+        ],
+        "evidence_score": 0.9493677616119385
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "adv-003",
+    "category": "adjacent_absent",
+    "question": "How many gates does a CPLD in the Xilinx CoolRunner series specifically contain?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "CPLDs offer much smaller amounts of logic\u2013up to about 10,000 system gates. [C2]",
+    "retrieved_chunk_ids": [
+      "1:27",
+      "1:26",
+      "1:13",
+      "1:24",
+      "1:39"
+    ],
+    "supported": [
+      {
+        "text": "CPLDs offer much smaller amounts of logic\u2013up to about 10,000 system gates.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:26"
+        ],
+        "evidence_score": 0.9665263891220093
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify how many gates a CPLD in the Xilinx CoolRunner series specifically contains.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-004",
+    "category": "adjacent_absent",
+    "question": "What percentage improvement in execution speed (not code density) does the ARM Thumb 16-bit instruction set provide over 32-bit instructions?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "The ARM Thumb 16-bit instruction set improves code density by about 30% over 32-bit fixed-length instructions. [C1]",
+    "retrieved_chunk_ids": [
+      "1:39",
+      "1:40",
+      "1:31",
+      "1:13",
+      "1:36"
+    ],
+    "supported": [
+      {
+        "text": "The ARM Thumb 16-bit instruction set improves code density by about 30% over 32-bit fixed-length instructions.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:39"
+        ],
+        "evidence_score": 0.9964138865470886
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify the percentage improvement in execution speed provided by the ARM Thumb 16-bit instruction set over 32-bit instructions.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-005",
+    "category": "adjacent_absent",
+    "question": "What clock speed, in MHz or GHz, does a RISC processor typically run at, per the document?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:29",
+      "1:37",
+      "1:31",
+      "1:39",
+      "1:36"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The context does not specify the clock speed, in MHz or GHz, that a RISC processor typically runs at.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-006",
+    "category": "adjacent_absent",
+    "question": "What is the maximum acceptable MTBF, in hours, for a mission-critical embedded system, per the document?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "MTBF gives the frequency of failures in hours/weeks/months for determining system reliability. [C1]",
+    "retrieved_chunk_ids": [
+      "1:20",
+      "1:10",
+      "1:19",
+      "1:14",
+      "1:13"
+    ],
+    "supported": [
+      {
+        "text": "MTBF gives the frequency of failures in hours/weeks/months for determining system reliability.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.8705950975418091
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify the maximum acceptable MTBF in hours for a mission-critical embedded system.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-007",
+    "category": "unsupported_combination",
+    "question": "Since ARM processors are specifically designed for low power consumption and DSPs are 2 to 3 times faster than general purpose microprocessors in signal processing, how much faster and more power-efficient is an ARM-based DSP than a standard microprocessor?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Digital Signal Processors (DSPs) are 2 to 3 times faster than general purpose microprocessors in signal processing applications [C1]. [C1] ARM processors are specifically designed to be small to reduce power consumption and extend battery operation [C2]. [C2]",
+    "retrieved_chunk_ids": [
+      "1:25",
+      "1:38",
+      "1:40",
+      "1:39",
+      "1:13"
+    ],
+    "supported": [
+      {
+        "text": "Digital Signal Processors (DSPs) are 2 to 3 times faster than general purpose microprocessors in signal processing applications [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:25"
+        ],
+        "evidence_score": 0.9813111424446106
+      },
+      {
+        "text": "ARM processors are specifically designed to be small to reduce power consumption and extend battery operation [C2].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:38"
+        ],
+        "evidence_score": 0.9964497089385986
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify how much faster and more power-efficient an ARM-based DSP is compared to a standard microprocessor.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-008",
+    "category": "unsupported_combination",
+    "question": "Given that Large Scale embedded systems use high-performance RISC processors and RISC processors have a large number of registers, how many registers does a typical Large Scale embedded system have?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Large Scale embedded systems are built around high performance 32 or 64 bit RISC processors/controllers, RSoC or multi-core processors and PLD. [C3] RISC processors have a large number of registers available. [C1]",
+    "retrieved_chunk_ids": [
+      "1:34",
+      "1:39",
+      "1:13",
+      "1:36",
+      "1:33"
+    ],
+    "supported": [
+      {
+        "text": "Large Scale embedded systems are built around high performance 32 or 64 bit RISC processors/controllers, RSoC or multi-core processors and PLD.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C3"
+        ],
+        "chunk_ids": [
+          "1:13"
+        ],
+        "evidence_score": 0.6338717937469482
+      },
+      {
+        "text": "RISC processors have a large number of registers available.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:34"
+        ],
+        "evidence_score": 0.9896766543388367
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify how many registers a typical Large Scale embedded system has.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-009",
+    "category": "unsupported_combination",
+    "question": "Since Hard Real Time systems require deterministic execution and embedded systems with critical application needs should have an MTTR of the order of minutes, does that mean all Hard Real Time systems have an MTTR of a few minutes?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Hard Real Time systems require deterministic execution behavior [C1]. [C1] Embedded systems with critical application needs should have an MTTR of the order of minutes [C4]. [C4]",
+    "retrieved_chunk_ids": [
+      "1:11",
+      "1:13",
+      "1:14",
+      "1:20",
+      "1:19"
+    ],
+    "supported": [
+      {
+        "text": "Hard Real Time systems require deterministic execution behavior [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:11"
+        ],
+        "evidence_score": 0.9563573598861694
+      },
+      {
+        "text": "Embedded systems with critical application needs should have an MTTR of the order of minutes [C4].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C4"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.9877294898033142
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify that all Hard Real Time systems have an MTTR of a few minutes.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      },
+      {
+        "text": "The context does not provide a direct relationship between Hard Real Time systems and MTTR requirements.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-010",
+    "category": "unsupported_combination",
+    "question": "Because RISC uses fixed-length instructions and Thumb's 16-bit instructions improve code density by about 30%, does that mean converting a CISC processor's instruction set to Thumb would improve its code density by 30% as well?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "RISC uses fixed-length instructions, while CISC uses variable length instructions [C2]. [C2] Thumb's 16-bit instructions improve code density by about 30% over 32-bit fixed-length instructions [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:39",
+      "1:35",
+      "1:29",
+      "1:36",
+      "1:30"
+    ],
+    "supported": [
+      {
+        "text": "RISC uses fixed-length instructions, while CISC uses variable length instructions [C2].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:35"
+        ],
+        "evidence_score": 0.9923688769340515
+      },
+      {
+        "text": "Thumb's 16-bit instructions improve code density by about 30% over 32-bit fixed-length instructions [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:39"
+        ],
+        "evidence_score": 0.9962717294692993
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not address this.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-011",
+    "category": "unsupported_combination",
+    "question": "Since embedded systems are described as safety-critical and ASICs reduce system development cost by integrating several functions into a single chip, does using an ASIC make an embedded system safer?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Embedded systems are described as safety-critical, meaning they must not endanger human life and the environment [C3]. [C3] Application Specific Integrated Circuits (ASICs) reduce system development cost by integrating several functions into a single chip [C2]. [C2]",
+    "retrieved_chunk_ids": [
+      "1:3",
+      "1:25",
+      "1:20",
+      "1:23",
+      "1:39"
+    ],
+    "supported": [
+      {
+        "text": "Embedded systems are described as safety-critical, meaning they must not endanger human life and the environment [C3].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C3"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.9567555785179138
+      },
+      {
+        "text": "Application Specific Integrated Circuits (ASICs) reduce system development cost by integrating several functions into a single chip [C2].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:25"
+        ],
+        "evidence_score": 0.9744282364845276
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The provided context does not specify whether using an ASIC makes an embedded system safer.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-012",
+    "category": "out_of_scope",
+    "question": "What is the RISC-V instruction set architecture's licensing model?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:32",
+      "1:29",
+      "1:39",
+      "1:1",
+      "1:36"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The context does not specify this.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-013",
+    "category": "out_of_scope",
+    "question": "How does the document describe Kubernetes container orchestration for embedded Linux deployments?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:0",
+      "1:3",
+      "1:39",
+      "1:13",
+      "1:19"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The context does not specify this.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-014",
+    "category": "out_of_scope",
+    "question": "What does the document say about the power consumption of a Raspberry Pi 4?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "The ARM core's strength is that it does not take the RISC concept too far, focusing on total effective system performance and power consumption rather than only processor speed. [C1]",
+    "retrieved_chunk_ids": [
+      "1:39",
+      "1:2",
+      "1:8",
+      "1:41",
+      "1:25"
+    ],
+    "supported": [
+      {
+        "text": "The ARM core's strength is that it does not take the RISC concept too far, focusing on total effective system performance and power consumption rather than only processor speed.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:39"
+        ],
+        "evidence_score": 0.9970682263374329
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify information about the power consumption of a Raspberry Pi 4.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-015",
+    "category": "out_of_scope",
+    "question": "According to the document, what is the capital city of France?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:2",
+      "1:3",
+      "1:29",
+      "1:1",
+      "1:21"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The context does not specify this.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-016",
+    "category": "out_of_scope",
+    "question": "What does the document say about transformer-based large language model architectures?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:39",
+      "1:41",
+      "1:2",
+      "1:13",
+      "1:1"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The context does not address this.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "ret-001",
+    "category": null,
+    "question": "Per the comparison table, what kind of hardware does a general computing system combine with its operating system?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "A general computing system combines generic hardware with a General Purpose Operating System for executing a variety of applications [C1]. The context does not specify any additional details about the hardware. [C1]",
+    "retrieved_chunk_ids": [
+      "1:5",
+      "1:9",
+      "1:6",
+      "1:7",
+      "1:8"
+    ],
+    "supported": [
+      {
+        "text": "A general computing system combines generic hardware with a General Purpose Operating System for executing a variety of applications [C1]. The context does not specify any additional details about the hardware.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:5"
+        ],
+        "evidence_score": 0.857828676700592
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-002",
+    "category": null,
+    "question": "Does every embedded system necessarily contain an operating system, according to Table 1.1?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Embedded Systems may or may not contain an operating system for functioning according to Table 1.1 [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:6",
+      "1:7",
+      "1:3",
+      "1:5",
+      "1:9"
+    ],
+    "supported": [
+      {
+        "text": "Embedded Systems may or may not contain an operating system for functioning according to Table 1.1 [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:6"
+        ],
+        "evidence_score": 0.9768263697624207
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-003",
+    "category": null,
+    "question": "According to Table 1.1, is the firmware of an embedded system alterable by the end user?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "The firmware of the embedded system is non-alterable by the end-user [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:7",
+      "1:3",
+      "1:22",
+      "1:21",
+      "1:23"
+    ],
+    "supported": [
+      {
+        "text": "The firmware of the embedded system is non-alterable by the end-user [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:7"
+        ],
+        "evidence_score": 0.9965687990188599
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-004",
+    "category": null,
+    "question": "Per Table 1.1, what is described as the key deciding factor when selecting a general computing system?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Performance is described as the key deciding factor when selecting a general computing system. [C1]",
+    "retrieved_chunk_ids": [
+      "1:8",
+      "1:10",
+      "1:9",
+      "1:5",
+      "1:6"
+    ],
+    "supported": [
+      {
+        "text": "Performance is described as the key deciding factor when selecting a general computing system.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:8"
+        ],
+        "evidence_score": 0.9931948184967041
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-005",
+    "category": null,
+    "question": "Which type of system is described in Table 1.1 as 'highly tailored to take advantage of the power saving modes supported by hardware and Operating System'?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "The type of system described in Table 1.1 as 'highly tailored to take advantage of the power saving modes supported by hardware and Operating System' is Embedded Systems [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:9",
+      "1:5",
+      "1:7",
+      "1:6",
+      "1:8"
+    ],
+    "supported": [
+      {
+        "text": "The type of system described in Table 1.1 as 'highly tailored to take advantage of the power saving modes supported by hardware and Operating System' is Embedded Systems [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:9"
+        ],
+        "evidence_score": 0.9966762065887451
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-006",
+    "category": null,
+    "question": "For general computing systems, does Table 1.1 describe response requirements as time critical?",
+    "expected_state": "ok",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:10",
+      "1:8",
+      "1:11",
+      "1:4",
+      "1:9"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "For general computing systems, response requirements are not time critical [C1]. The context does not address this.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim",
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:10"
+        ],
+        "evidence_score": 0.7578076720237732
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "ret-007",
+    "category": null,
+    "question": "Per Table 1.1, is execution behavior required to be deterministic in general computing systems?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Execution behavior is not required to be deterministic in general computing systems [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:11",
+      "1:13",
+      "1:0",
+      "1:8",
+      "1:5"
+    ],
+    "supported": [
+      {
+        "text": "Execution behavior is not required to be deterministic in general computing systems [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:11"
+        ],
+        "evidence_score": 0.9951620697975159
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-008",
+    "category": null,
+    "question": "Per Table 1.2, does RISC or CISC have a greater number of instructions?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "CISC has a greater number of instructions than RISC [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:30",
+      "1:35",
+      "1:32",
+      "1:31",
+      "1:34"
+    ],
+    "supported": [
+      {
+        "text": "CISC has a greater number of instructions than RISC [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:30"
+        ],
+        "evidence_score": 0.9862171411514282
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-009",
+    "category": null,
+    "question": "According to Table 1.2, which architecture generally lacks an instruction pipelining feature?",
+    "expected_state": "ok",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:31",
+      "1:32",
+      "1:29",
+      "1:36",
+      "1:30"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "CISC generally lacks an instruction pipelining feature [C1]. The context does not specify any other architecture that lacks this feature.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim",
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:31"
+        ],
+        "evidence_score": 0.9360952377319336
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "ret-010",
+    "category": null,
+    "question": "Per Table 1.2, does RISC use an orthogonal or non-orthogonal instruction set?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "RISC uses an orthogonal instruction set. [C1]",
+    "retrieved_chunk_ids": [
+      "1:32",
+      "1:31",
+      "1:30",
+      "1:35",
+      "1:33"
+    ],
+    "supported": [
+      {
+        "text": "RISC uses an orthogonal instruction set.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:32"
+        ],
+        "evidence_score": 0.9955032467842102
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-011",
+    "category": null,
+    "question": "In RISC, per Table 1.2, on what can operations be performed, and what are the only memory operations allowed?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "In RISC, operations are performed on registers only. [C1]",
+    "retrieved_chunk_ids": [
+      "1:33",
+      "1:37",
+      "1:32",
+      "1:36",
+      "1:39"
+    ],
+    "supported": [
+      {
+        "text": "In RISC, operations are performed on registers only.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:33"
+        ],
+        "evidence_score": 0.9964224100112915
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The only memory operations allowed in RISC are load and store.",
+        "status": "UNSUPPORTED",
+        "reason": "best entailment score 0.481 on [C1] is below threshold 0.550",
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:33"
+        ],
+        "evidence_score": 0.48068147897720337
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "ret-012",
+    "category": null,
+    "question": "Per Table 1.2, which architecture has a limited number of general purpose registers?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "CISC has a limited number of general purpose registers. [C1]",
+    "retrieved_chunk_ids": [
+      "1:34",
+      "1:36",
+      "1:6",
+      "1:5",
+      "1:32"
+    ],
+    "supported": [
+      {
+        "text": "CISC has a limited number of general purpose registers.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:34"
+        ],
+        "evidence_score": 0.9947911500930786
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-013",
+    "category": null,
+    "question": "Per Table 1.2, are RISC instructions of fixed or variable length?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "RISC instructions are of single, fixed length. [C1]",
+    "retrieved_chunk_ids": [
+      "1:35",
+      "1:30",
+      "1:32",
+      "1:31",
+      "1:33"
+    ],
+    "supported": [
+      {
+        "text": "RISC instructions are of single, fixed length.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:35"
+        ],
+        "evidence_score": 0.9860316514968872
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-014",
+    "category": null,
+    "question": "What does the RISC design philosophy concentrate on, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "The RISC philosophy concentrates on reducing the complexity of instructions performed by the hardware. [C1] The RISC philosophy provides greater flexibility and intelligence in software rather than hardware. [C1]",
+    "retrieved_chunk_ids": [
+      "1:29",
+      "1:1",
+      "1:36",
+      "1:39",
+      "1:37"
+    ],
+    "supported": [
+      {
+        "text": "The RISC philosophy concentrates on reducing the complexity of instructions performed by the hardware.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:29"
+        ],
+        "evidence_score": 0.992010235786438
+      },
+      {
+        "text": "The RISC philosophy provides greater flexibility and intelligence in software rather than hardware.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:29"
+        ],
+        "evidence_score": 0.9793620109558105
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-015",
+    "category": null,
+    "question": "Which places greater demands on the compiler: RISC or CISC design, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "RISC design places greater demands on the compiler compared to CISC design [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:29",
+      "1:30",
+      "1:36",
+      "1:32",
+      "1:34"
+    ],
+    "supported": [
+      {
+        "text": "RISC design places greater demands on the compiler compared to CISC design [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:29"
+        ],
+        "evidence_score": 0.9909454584121704
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-016",
+    "category": null,
+    "question": "How does the document define 'Response' as a quality attribute of embedded systems?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Response is defined as the measure of quickness of the system, indicating how fast the system is tracking changes in input variables, with most embedded systems demanding fast response that should be almost real time, such as in flight control applications. [C1]",
+    "retrieved_chunk_ids": [
+      "1:20",
+      "1:22",
+      "1:0",
+      "1:10",
+      "1:3"
+    ],
+    "supported": [
+      {
+        "text": "Response is defined as the measure of quickness of the system, indicating how fast the system is tracking changes in input variables, with most embedded systems demanding fast response that should be almost real time, such as in flight control applications.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.9665166735649109
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-017",
+    "category": null,
+    "question": "What two terms does the document use to determine system reliability, and what does each measure?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "The two terms used to determine system reliability are Mean Time Between Failure (MTBF) and Mean Time To Repair (MTTR) [C1]. [C1] MTBF measures the frequency of failures in hours/weeks/months [C1]. [C1] MTTR specifies how long the system is allowed to be out of order following a failure [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:20",
+      "1:21",
+      "1:22",
+      "1:41",
+      "1:12"
+    ],
+    "supported": [
+      {
+        "text": "The two terms used to determine system reliability are Mean Time Between Failure (MTBF) and Mean Time To Repair (MTTR) [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.9896911382675171
+      },
+      {
+        "text": "MTBF measures the frequency of failures in hours/weeks/months [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.9661999940872192
+      },
+      {
+        "text": "MTTR specifies how long the system is allowed to be out of order following a failure [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.7156099081039429
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-018",
+    "category": null,
+    "question": "For an embedded system with a critical application need, what order of magnitude should MTTR be, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "For an embedded system with a critical application need, MTTR should be of the order of minutes [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:20",
+      "1:10",
+      "1:13",
+      "1:14",
+      "1:3"
+    ],
+    "supported": [
+      {
+        "text": "For an embedded system with a critical application need, MTTR should be of the order of minutes [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.9102122187614441
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-019",
+    "category": null,
+    "question": "What three major measures of information security does the document list under the Security quality attribute?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "The three major measures of information security listed are Confidentiality, Integrity, and Availability [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:21",
+      "1:20",
+      "1:22",
+      "1:0",
+      "1:14"
+    ],
+    "supported": [
+      {
+        "text": "The three major measures of information security listed are Confidentiality, Integrity, and Availability [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:21"
+        ],
+        "evidence_score": 0.9947276711463928
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-020",
+    "category": null,
+    "question": "How is Throughput measured, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Throughput is generally measured in terms of 'Benchmark'. A Benchmark is a reference point by which something can be measured [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:20",
+      "1:36",
+      "1:24",
+      "1:39",
+      "1:22"
+    ],
+    "supported": [
+      {
+        "text": "Throughput is generally measured in terms of 'Benchmark'. A Benchmark is a reference point by which something can be measured [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:20"
+        ],
+        "evidence_score": 0.9155363440513611
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-021",
+    "category": null,
+    "question": "What relationship does the document describe between reliability and maintainability?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Reliability and maintainability are complementary to each other, meaning a more reliable system results in less corrective maintainability requirements and vice versa [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:21",
+      "1:20",
+      "1:2",
+      "1:22",
+      "1:41"
+    ],
+    "supported": [
+      {
+        "text": "Reliability and maintainability are complementary to each other, meaning a more reliable system results in less corrective maintainability requirements and vice versa [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:21"
+        ],
+        "evidence_score": 0.989373505115509
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-022",
+    "category": null,
+    "question": "What is Portability described as, in the non-operational quality attributes section?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Portability is the measure of system independence. [C2] An embedded product is said to be portable if the product is capable of functioning in various environments, target processors and embedded operating systems. [C2] \"Porting\" represents the migration of embedded firmware written for one target processor to a different target processor. [C2]",
+    "retrieved_chunk_ids": [
+      "1:20",
+      "1:22",
+      "1:21",
+      "1:0",
+      "1:7"
+    ],
+    "supported": [
+      {
+        "text": "Portability is the measure of system independence.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:22"
+        ],
+        "evidence_score": 0.9978376030921936
+      },
+      {
+        "text": "An embedded product is said to be portable if the product is capable of functioning in various environments, target processors and embedded operating systems.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:22"
+        ],
+        "evidence_score": 0.9933024644851685
+      },
+      {
+        "text": "\"Porting\" represents the migration of embedded firmware written for one target processor to a different target processor.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:22"
+        ],
+        "evidence_score": 0.9856045842170715
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-023",
+    "category": null,
+    "question": "What two levels does the document divide Debug-ability into?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Debug-ability is divided into hardware level and software level. [C1]",
+    "retrieved_chunk_ids": [
+      "1:22",
+      "1:21",
+      "1:2",
+      "1:41",
+      "1:20"
+    ],
+    "supported": [
+      {
+        "text": "Debug-ability is divided into hardware level and software level.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:22"
+        ],
+        "evidence_score": 0.9964410662651062
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-024",
+    "category": null,
+    "question": "What does 'Time-to-Prototype and Market' measure, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "'Time-to-Prototype and Market' measures the time elapsed between the conceptualization of a product and the time at which the product is ready for selling [C1]. [C1] The commercial embedded product market is highly competitive and time to market the product is a critical factor in the success of commercial embedded products [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:22",
+      "1:39",
+      "1:41",
+      "1:20",
+      "1:3"
+    ],
+    "supported": [
+      {
+        "text": "'Time-to-Prototype and Market' measures the time elapsed between the conceptualization of a product and the time at which the product is ready for selling [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:22"
+        ],
+        "evidence_score": 0.9918312430381775
+      },
+      {
+        "text": "The commercial embedded product market is highly competitive and time to market the product is a critical factor in the success of commercial embedded products [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:22"
+        ],
+        "evidence_score": 0.9965029954910278
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-025",
+    "category": null,
+    "question": "How does the document define Evolvability of an embedded system?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Evolvability refers to the ease with which the embedded product can be modified to take advantage of new firmware or hardware technologies [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:22",
+      "1:3",
+      "1:23",
+      "1:20",
+      "1:18"
+    ],
+    "supported": [
+      {
+        "text": "Evolvability refers to the ease with which the embedded product can be modified to take advantage of new firmware or hardware technologies [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:22"
+        ],
+        "evidence_score": 0.9961690306663513
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-026",
+    "category": null,
+    "question": "How does the document define an embedded system?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "An embedded system is a combination of hardware and software with some attached peripherals to perform a specific task or a narrow range of tasks with restricted resources [C1]. [C1] An embedded system is an electronic system that is not directly programmed by the user, unlike a personal computer [C1]. [C1] An embedded system is a device that incorporates a computer within its implementation, primarily as a means to simplify the system design and to provide flexibility [C1]. [C1] An embedded system is a microcontroller-based, software-driven, reliable, real-time control system [C1]. [C1] An embedded system is designed to perform a specific function and is a combination of both hardware and firmware (Software) [C1]. [C1] An embedded system is a combination of special purpose hardware and embedded OS for executing a specific set of applications [C2]. [C2] An embedded system is a combination of hardware, software, and mechanical components and is supposed to do one specific task only [C3]. [C3]",
+    "retrieved_chunk_ids": [
+      "1:3",
+      "1:5",
+      "1:23",
+      "1:15",
+      "1:7"
+    ],
+    "supported": [
+      {
+        "text": "An embedded system is a combination of hardware and software with some attached peripherals to perform a specific task or a narrow range of tasks with restricted resources [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:3"
+        ],
+        "evidence_score": 0.9622864723205566
+      },
+      {
+        "text": "An embedded system is an electronic system that is not directly programmed by the user, unlike a personal computer [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:3"
+        ],
+        "evidence_score": 0.986559271812439
+      },
+      {
+        "text": "An embedded system is a device that incorporates a computer within its implementation, primarily as a means to simplify the system design and to provide flexibility [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:3"
+        ],
+        "evidence_score": 0.961933434009552
+      },
+      {
+        "text": "An embedded system is a microcontroller-based, software-driven, reliable, real-time control system [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:3"
+        ],
+        "evidence_score": 0.9849429130554199
+      },
+      {
+        "text": "An embedded system is designed to perform a specific function and is a combination of both hardware and firmware (Software) [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:3"
+        ],
+        "evidence_score": 0.9747886657714844
+      },
+      {
+        "text": "An embedded system is a combination of special purpose hardware and embedded OS for executing a specific set of applications [C2].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:5"
+        ],
+        "evidence_score": 0.9961141347885132
+      },
+      {
+        "text": "An embedded system is a combination of hardware, software, and mechanical components and is supposed to do one specific task only [C3].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C3"
+        ],
+        "chunk_ids": [
+          "1:23"
+        ],
+        "evidence_score": 0.8208578824996948
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-027",
+    "category": null,
+    "question": "What microprocessors/microcontrollers were early (first generation) embedded systems built around, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Early embedded systems were built around 8-bit microprocessors like 8085 and Z80 and 4-bit microcontrollers. [C1]",
+    "retrieved_chunk_ids": [
+      "1:13",
+      "1:24",
+      "1:25",
+      "1:3",
+      "1:40"
+    ],
+    "supported": [
+      {
+        "text": "Early embedded systems were built around 8-bit microprocessors like 8085 and Z80 and 4-bit microcontrollers.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:13"
+        ],
+        "evidence_score": 0.9620760083198547
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-028",
+    "category": null,
+    "question": "What example applications does the document give for third-generation embedded systems?",
+    "expected_state": "ok",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:13",
+      "1:16",
+      "1:14",
+      "1:17",
+      "1:3"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "Examples of third-generation embedded systems include robotics, industrial process control, and networking [C1]. The context does not specify additional examples.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim",
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:13"
+        ],
+        "evidence_score": 0.6138986349105835
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "ret-029",
+    "category": null,
+    "question": "What kind of processors are Large Scale embedded systems, per the document's complexity classification, built around?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Large Scale Embedded Systems are built around high performance 32 or 64 bit RISC processors/controllers, RSoC or multi-core processors and PLD. [C1]",
+    "retrieved_chunk_ids": [
+      "1:13",
+      "1:40",
+      "1:24",
+      "1:12",
+      "1:3"
+    ],
+    "supported": [
+      {
+        "text": "Large Scale Embedded Systems are built around high performance 32 or 64 bit RISC processors/controllers, RSoC or multi-core processors and PLD.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:13"
+        ],
+        "evidence_score": 0.6158511638641357
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-030",
+    "category": null,
+    "question": "What is the consequence of missing a deadline in a Hard Real Time system, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Missing a program/task execution time deadline in a Hard Real Time system can have catastrophic consequences (financial, human loss of life, etc.) [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:14",
+      "1:11",
+      "1:19",
+      "1:2",
+      "1:20"
+    ],
+    "supported": [
+      {
+        "text": "Missing a program/task execution time deadline in a Hard Real Time system can have catastrophic consequences (financial, human loss of life, etc.) [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:14"
+        ],
+        "evidence_score": 0.9640710949897766
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-031",
+    "category": null,
+    "question": "How does the document distinguish Event Triggered from Time Triggered embedded systems?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Event Triggered embedded systems have activities that are dynamic and depend upon the occurrence of different events. [C1] Time Triggered embedded systems have activities that follow a statically computed schedule and are predictable. [C1]",
+    "retrieved_chunk_ids": [
+      "1:14",
+      "1:19",
+      "1:12",
+      "1:3",
+      "1:0"
+    ],
+    "supported": [
+      {
+        "text": "Event Triggered embedded systems have activities that are dynamic and depend upon the occurrence of different events.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:14"
+        ],
+        "evidence_score": 0.9859876036643982
+      },
+      {
+        "text": "Time Triggered embedded systems have activities that follow a statically computed schedule and are predictable.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:14"
+        ],
+        "evidence_score": 0.9869709014892578
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-032",
+    "category": null,
+    "question": "What are the five (or six) purposes of embedded systems listed in the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Embedded systems are used for data collection/storage/representation. [C3] Embedded systems are used for data communication. [C3] Embedded systems are used for signal processing. [C2] Embedded systems are used for monitoring. [C2] Embedded systems are used for control. [C5]",
+    "retrieved_chunk_ids": [
+      "1:14",
+      "1:16",
+      "1:15",
+      "1:18",
+      "1:17"
+    ],
+    "supported": [
+      {
+        "text": "Embedded systems are used for data collection/storage/representation.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C3"
+        ],
+        "chunk_ids": [
+          "1:15"
+        ],
+        "evidence_score": 0.9967881441116333
+      },
+      {
+        "text": "Embedded systems are used for data communication.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C3"
+        ],
+        "chunk_ids": [
+          "1:15"
+        ],
+        "evidence_score": 0.997199535369873
+      },
+      {
+        "text": "Embedded systems are used for signal processing.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:16"
+        ],
+        "evidence_score": 0.9988309741020203
+      },
+      {
+        "text": "Embedded systems are used for monitoring.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:16"
+        ],
+        "evidence_score": 0.998885452747345
+      },
+      {
+        "text": "Embedded systems are used for control.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C5"
+        ],
+        "chunk_ids": [
+          "1:17"
+        ],
+        "evidence_score": 0.9991074204444885
+      }
+    ],
+    "rejected": [
+      {
+        "text": "The context does not specify a sixth purpose of embedded systems.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      },
+      {
+        "text": "The context does not specify a fifth purpose of embedded systems.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided",
+        "citations": [],
+        "chunk_ids": [],
+        "evidence_score": null
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "ret-033",
+    "category": null,
+    "question": "Why are embedded systems described as 'reactive' in the Characteristics section?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Embedded systems are described as 'reactive' because they produce changes in output in response to changes in the input, capturing any changes in the real world through sensors or input devices in real time, and the control algorithm reacts to bring the controlled output variables to the desired level [C3]. [C3] The timing behavior of embedded systems is deterministic, meaning they should respond to requests in a known amount of time, which is a characteristic of reactive systems [C3]. [C3]",
+    "retrieved_chunk_ids": [
+      "1:18",
+      "1:23",
+      "1:19",
+      "1:3",
+      "1:14"
+    ],
+    "supported": [
+      {
+        "text": "Embedded systems are described as 'reactive' because they produce changes in output in response to changes in the input, capturing any changes in the real world through sensors or input devices in real time, and the control algorithm reacts to bring the controlled output variables to the desired level [C3].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C3"
+        ],
+        "chunk_ids": [
+          "1:19"
+        ],
+        "evidence_score": 0.9928345680236816
+      },
+      {
+        "text": "The timing behavior of embedded systems is deterministic, meaning they should respond to requests in a known amount of time, which is a characteristic of reactive systems [C3].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C3"
+        ],
+        "chunk_ids": [
+          "1:19"
+        ],
+        "evidence_score": 0.9879909157752991
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-034",
+    "category": null,
+    "question": "Which microcontroller does the document identify as the world's first microcontroller?",
+    "expected_state": "ok",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "retrieved_chunk_ids": [
+      "1:24",
+      "1:13",
+      "1:25",
+      "1:3",
+      "1:1"
+    ],
+    "supported": [],
+    "rejected": [
+      {
+        "text": "Texas Instruments TMS 1000 is considered as the world's first microcontroller.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim",
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:24"
+        ],
+        "evidence_score": 0.8250301480293274
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "ret-035",
+    "category": null,
+    "question": "How many times faster than general purpose microprocessors are DSPs in signal processing applications, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Digital Signal Processors (DSPs) are 2 to 3 times faster than general purpose microprocessors in signal processing applications [C1]. The context does not specify an exact number. [C1]",
+    "retrieved_chunk_ids": [
+      "1:25",
+      "1:40",
+      "1:13",
+      "1:24",
+      "1:16"
+    ],
+    "supported": [
+      {
+        "text": "Digital Signal Processors (DSPs) are 2 to 3 times faster than general purpose microprocessors in signal processing applications [C1]. The context does not specify an exact number.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:25"
+        ],
+        "evidence_score": 0.9935611486434937
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-036",
+    "category": null,
+    "question": "How many system gates does the largest shipping FPGA (part of the Xilinx Virtex line) provide, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "The largest FPGA now shipping, part of the Xilinx Virtex line of devices, provides eight million system gates. [C1]",
+    "retrieved_chunk_ids": [
+      "1:26",
+      "1:27",
+      "1:24",
+      "1:13",
+      "1:1"
+    ],
+    "supported": [
+      {
+        "text": "The largest FPGA now shipping, part of the Xilinx Virtex line of devices, provides eight million system gates.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:26"
+        ],
+        "evidence_score": 0.9493677616119385
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-037",
+    "category": null,
+    "question": "Up to how many gates do CPLDs offer, per the document, in contrast to FPGAs?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "CPLDs offer up to about 10,000 gates, while FPGAs offer the highest amount of logic density, with the largest FPGA providing eight million system gates. [C1][C2]",
+    "retrieved_chunk_ids": [
+      "1:26",
+      "1:27",
+      "1:24",
+      "1:34",
+      "1:39"
+    ],
+    "supported": [
+      {
+        "text": "CPLDs offer up to about 10,000 gates, while FPGAs offer the highest amount of logic density, with the largest FPGA providing eight million system gates.",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1",
+          "C2"
+        ],
+        "chunk_ids": [
+          "1:26",
+          "1:27"
+        ],
+        "evidence_score": 0.9739506840705872
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-038",
+    "category": null,
+    "question": "By about what percentage do Thumb 16-bit instructions improve code density over 32-bit fixed-length instructions, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "Thumb 16-bit instructions improve code density by about 30% over 32-bit fixed-length instructions [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:39",
+      "1:40",
+      "1:35",
+      "1:13",
+      "1:25"
+    ],
+    "supported": [
+      {
+        "text": "Thumb 16-bit instructions improve code density by about 30% over 32-bit fixed-length instructions [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:39"
+        ],
+        "evidence_score": 0.9959861636161804
+      }
+    ],
+    "rejected": [],
+    "error": null
+  },
+  {
+    "id": "ret-039",
+    "category": null,
+    "question": "What is the first stage of the embedded system development process, per the document?",
+    "expected_state": "ok",
+    "actual_state": "ok",
+    "answer": "The first stage of the embedded system development process is ideation/purpose of the product, where an idea is discussed with all the stakeholders and brainstormed to conclude if the idea is worth taking to the development stage [C1]. [C1]",
+    "retrieved_chunk_ids": [
+      "1:40",
+      "1:3",
+      "1:1",
+      "1:13",
+      "1:22"
+    ],
+    "supported": [
+      {
+        "text": "The first stage of the embedded system development process is ideation/purpose of the product, where an idea is discussed with all the stakeholders and brainstormed to conclude if the idea is worth taking to the development stage [C1].",
+        "status": "SUPPORTED",
+        "reason": null,
+        "citations": [
+          "C1"
+        ],
+        "chunk_ids": [
+          "1:40"
+        ],
+        "evidence_score": 0.9978424310684204
+      }
+    ],
+    "rejected": [],
+    "error": null
+  }
+]

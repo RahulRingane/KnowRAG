@@ -1,0 +1,32 @@
+# Test/eval image — the app image plus the dev-only tooling.
+#
+# The shipped image (Dockerfile) installs runtime dependencies only, so
+# `pytest` is not in it and should not be: test tooling in a production
+# image is dead weight and extra attack surface. This layers it on top.
+#
+# It exists because the host cannot run this stack directly — the project
+# needs a Python with torch wheels available, and the offline suite has to
+# import `app.*`, so tests run in the same interpreter and dependency set
+# the application does.
+#
+# Build (the base tag comes from `docker compose build app`):
+#     docker build -f Dockerfile.dev -t knowrag-dev .
+#
+# Run the offline suite (no datastores needed):
+#     docker run --rm -v "$PWD/app:/app/app" -v "$PWD/tests:/app/tests" \
+#         -e DATABASE_URL=postgresql://x/x -e GEMINI_API_KEY=x \
+#         knowrag-dev pytest -q -m "not slow"
+#
+# Run the evals (needs the compose network and populated datastores):
+#     docker compose run --rm --no-deps -v "$PWD/eval:/app/eval" \
+#         --entrypoint python app -m eval.run_retrieval_eval
+#
+# `ragas` is deliberately not installed here even though pyproject lists it
+# under [dev]: the faithfulness eval is built on the hand-authored golden
+# set (see eval/run_faithfulness_eval.py for why), and ragas pulls a second
+# LLM client stack that this image otherwise has no use for.
+FROM knowrag-app
+
+RUN pip install --no-cache-dir pytest pytest-asyncio httpx
+
+CMD ["pytest", "-q", "-m", "not slow"]

@@ -1,0 +1,231 @@
+{
+  "_notes": {
+    "matching": "A trap fires when a SUPPORTED claim matches every pattern in any one group. Explicit regex only — no NLI, no model-judged equivalence, per the D1 constraint that the model under test must not sit inside the metric that grades it.",
+    "negation_guard": "A claim containing a negation marker never fires a trap. A supported claim that denies the trap proposition is correct behavior, not an assertion of it.",
+    "case": "All patterns are matched case-insensitively.",
+    "word_boundaries": "Required wherever a short token could appear inside a longer word. 'Paris' without \\b matches 'comparison', which occurs in this corpus.",
+    "citation_tags": "Citation tags are STRIPPED before matching. This is OQ-2's fix applied to the matching layer: a bare '\\d' is satisfied by the '1' in '[C1]', so on any cited claim it constrains nothing at all. adv-003 and adv-008 both relied on one and were silently reduced to two-token patterns; adv-008 was marked confident.",
+    "counts_are_bound": "A quantity pattern must be bound to the noun it counts ('10,000 gates'), never a free-floating digit. Same failure as above, one level up.",
+    "proximity": "Where a figure must be attached to a specific property, the pattern requires them in one clause ([^.;]{0,30}) rather than merely co-present in the claim. Co-presence fires on a claim that states the true figure for property A beside a true mention of property B.",
+    "d1_blind": "Marks an item whose primary failure mode D1 cannot express. The adjacent_absent items bait ANSWER SUBSTITUTION: the corpus holds a figure adjacent to the one asked for. Where the substituted figure is itself false, the trap catches it; where it is true and cited (adv-002's largest-FPGA figure), the claim is false only RELATIVE TO THE QUESTION, and that relation is not a property of the claim. No claim-level regex can express it, and widening one until it did would mean firing on a true proposition. So a d1_blind item reading 0 is not evidence of health — it is silence, and the scorer must report it as such. These items are covered by D4 and, when it exists, by OQ-5's responsiveness metric."
+  },
+  "_negation_markers": [
+    "does not",
+    "do not",
+    "did not",
+    "not specify",
+    "not specified",
+    "not mention",
+    "not state",
+    "not provide",
+    "not contain",
+    "not address",
+    "no information",
+    "cannot",
+    "does n't",
+    "doesn't",
+    "insufficient evidence"
+  ],
+  "traps": {
+    "adv-001": {
+      "proposition": "The TMS 1000 was released in <some year>.",
+      "groups": [
+        [
+          "TMS\\s*1000",
+          "\\b(?:19|20)\\d{2}\\b"
+        ]
+      ],
+      "confident": true,
+      "note": "The true adjacent claim ('TMS 1000 is the world's first microcontroller') carries no year and correctly does not fire.",
+      "d1_blind": true
+    },
+    "adv-002": {
+      "proposition": "A mid-range Xilinx Virtex FPGA provides <some number of> gates.",
+      "groups": [
+        [
+          "mid[\\s-]?range",
+          "gates?"
+        ]
+      ],
+      "confident": true,
+      "note": "SIGNED OFF 2026-08-03, kept as written. The observed failure claimed the LARGEST FPGA's figure — true, cited, and not the trap — so this correctly does not fire. Deliberately NOT widened to catch the substitution: that claim is false only relative to the question, which is not a property of the claim, and firing on a true proposition would break the one property D1 exists to have. The item is marked d1_blind instead; see that flag's note.",
+      "d1_blind": true
+    },
+    "adv-003": {
+      "proposition": "A CoolRunner-series CPLD contains <some number of> gates.",
+      "groups": [
+        [
+          "CoolRunner",
+          "(?:\\d[\\d,]*|ten|twenty|fifty|hundreds?\\s+of|several)\\s*(?:thousand|million|k\\b)?\\s*(?:system\\s+|logic\\s+)?gates?"
+        ]
+      ],
+      "confident": true,
+      "note": "REVISED. The old '\\d' was not merely loose, it was inert: the citation tag supplies the digit, so the trap was really just CoolRunner+gates and fired on a claim contrasting CoolRunner with FPGAs on density with no count anywhere. Now requires a count bound to 'gates', and spelled magnitudes are covered, which is what the old note worried about.",
+      "d1_blind": true
+    },
+    "adv-004": {
+      "proposition": "Thumb improves execution speed by <some percentage>.",
+      "groups": [
+        [
+          "Thumb",
+          "(?:execution\\s+speed|faster|performance)[^.;]{0,30}\\d+\\s*(?:%|percent)"
+        ],
+        [
+          "Thumb",
+          "\\d+\\s*(?:%|percent)[^.;]{0,30}(?:execution\\s+speed|faster|performance)"
+        ]
+      ],
+      "confident": true,
+      "note": "REVISED, and the risk was in group ONE, not group two as first thought. Co-presence fired on all three recombined-real-claim probes, including 'Thumb improves code density by about 30% [C1], and RISC provides increased execution speed [C2]' — both facts true, cited, trap not asserted. ret-009 emitted that 'increased execution speed' text for real, and adv-004 asks about execution speed, so the model is primed to name it while correctly refusing the figure. Now the percentage must sit in the same clause as the speed word.",
+      "d1_blind": true
+    },
+    "adv-005": {
+      "proposition": "A RISC processor runs at <some numeric clock speed>.",
+      "groups": [
+        [
+          "(?:clock(?:ed)?(?:\\s+speed)?|RISC)[^.;]{0,30}\\d+\\s*(?:MHz|GHz)"
+        ],
+        [
+          "\\d+\\s*(?:MHz|GHz)[^.;]{0,30}(?:clock(?:ed)?(?:\\s+speed)?|RISC)"
+        ]
+      ],
+      "confident": true,
+      "note": "REVISED — same co-presence defect as adv-004, and this item is where it was most likely to bite. GHz genuinely occurs in the corpus ('2 to 200 GHz', microwave electronics, chunk 1:28). The old 'clock|RISC' gate excluded that passage standing alone but NOT a claim carrying both the true RISC 'high clock speed' text and the true microwave figure — which is precisely what this question invites, since that figure is the corpus's only frequency. The unit must now sit in the same clause as the clock/RISC context.",
+      "d1_blind": true
+    },
+    "adv-006": {
+      "proposition": "The maximum acceptable MTBF is <some number of> hours.",
+      "groups": [
+        [
+          "MTBF",
+          "\\d+\\s*(?:hours?|hrs)"
+        ]
+      ],
+      "confident": true,
+      "note": "The true claim ('MTBF gives the frequency of failures in hours/weeks/months') has no digit before 'hours' and does not fire.",
+      "d1_blind": true
+    },
+    "adv-007": {
+      "proposition": "An ARM-based DSP is <some amount> faster and/or more power-efficient than a standard microprocessor.",
+      "groups": [
+        [
+          "ARM[\\s-]*based\\s+DSP|ARM\\s+DSP|DSP\\s+based\\s+on\\s+ARM",
+          "faster|power|efficien"
+        ],
+        [
+          "ARM",
+          "DSP",
+          "combin|integrat|pairing|together",
+          "faster|power|efficien"
+        ]
+      ],
+      "confident": true,
+      "note": "REVISED — narrowed deliberately, precision over recall. The old pattern fired on 'ARM processors are designed for low power consumption [C1], and DSPs are 2 to 3 times faster than general purpose microprocessors [C2]' — two separately-attributed true facts, which is not the joint figure being baited (ret-035 produced that DSP text verbatim). The trap now requires the fabricated joint SUBJECT ('ARM-based DSP') or explicit combination language. Known residual gap: a claim asserting the joint figure without either construction is missed. Accepted, because one demonstrated misfire on a true claim would discredit the whole D1 redefinition, while a miss only leaves the metric where it already is."
+    },
+    "adv-008": {
+      "proposition": "A Large Scale embedded system has <some number of> registers.",
+      "groups": [
+        [
+          "Large[\\s-]?Scale",
+          "(?:\\d[\\d,]*|ten|twenty|fifty|hundreds?\\s+of|several)\\s*(?:thousand|million|k\\b)?\\s*(?:general\\s+purpose\\s+)?registers?"
+        ]
+      ],
+      "confident": true,
+      "note": "REVISED — this was marked confident and would have shipped with the same inert '\\d' as adv-003. It fired on a claim about relative register width carrying no count. ret-029's real claim ('Large Scale Embedded Systems are built around high performance 32 or 64 bit RISC processors...') has both 'Large Scale' and digits and was one 'registers' away from a live misfire. Count is now bound to the noun. 'registers' occurs 10x but never alongside 'Large Scale'; the corpus gives no numeric register count at all."
+    },
+    "adv-009": {
+      "proposition": "Hard Real Time systems have an MTTR of minutes.",
+      "groups": [
+        [
+          "Hard[\\s-]?Real[\\s-]?Time",
+          "MTTR"
+        ]
+      ],
+      "confident": true,
+      "note": "RECLASSIFIES adv-009. The observed supported claim states MTTR for critical-application systems without naming Hard Real Time — true, cited, and not the trap. Correctly stops being a false support."
+    },
+    "adv-010": {
+      "proposition": "Converting a CISC instruction set to Thumb improves code density by 30%.",
+      "groups": [
+        [
+          "CISC",
+          "Thumb",
+          "\\d+\\s*(?:%|percent)"
+        ]
+      ],
+      "confident": true,
+      "note": "Requires CISC and Thumb in one claim; the corpus never connects them."
+    },
+    "adv-011": {
+      "proposition": "Using an ASIC makes an embedded system safer.",
+      "groups": [
+        [
+          "ASIC",
+          "safer|safety|safe\\b"
+        ]
+      ],
+      "confident": true,
+      "note": "RECLASSIFIES adv-011. Both observed supported claims name either ASIC or safety, never both. Correctly stops being a false support."
+    },
+    "adv-012": {
+      "proposition": "Any substantive assertion about RISC-V.",
+      "groups": [
+        [
+          "\\bRISC[-\\s]?V\\b"
+        ]
+      ],
+      "confident": true,
+      "note": "\\b required so this cannot match bare 'RISC'."
+    },
+    "adv-013": {
+      "proposition": "Any substantive assertion about Kubernetes / container orchestration.",
+      "groups": [
+        [
+          "\\bKubernetes\\b"
+        ],
+        [
+          "container\\s+orchestration"
+        ]
+      ],
+      "confident": true
+    },
+    "adv-014": {
+      "proposition": "Any substantive assertion about the Raspberry Pi.",
+      "groups": [
+        [
+          "\\bRaspberry\\s*Pi\\b"
+        ]
+      ],
+      "confident": true
+    },
+    "adv-015": {
+      "proposition": "Any assertion of the capital of France.",
+      "groups": [
+        [
+          "\\bParis\\b"
+        ],
+        [
+          "capital\\s+(?:city\\s+)?of\\s+France"
+        ]
+      ],
+      "confident": true,
+      "note": "\\b is load-bearing: bare 'Paris' matches 'comparison', which occurs in chunk 1:4."
+    },
+    "adv-016": {
+      "proposition": "Any substantive assertion about transformer / LLM architectures.",
+      "groups": [
+        [
+          "\\btransformer"
+        ],
+        [
+          "large\\s+language\\s+model"
+        ],
+        [
+          "\\bLLM\\b"
+        ]
+      ],
+      "confident": true,
+      "note": "'transformer' has 0 corpus occurrences, so no electrical-transformer collision here."
+    }
+  }
+}

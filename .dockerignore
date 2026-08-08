@@ -1,0 +1,29 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg-info
+.venv/
+venv/
+.venv_a5/
+
+# Local dev artifacts, not needed in the image
+data.pdf
+example_file.pdf
+PLAN.md
+README.md
+app/KNowRAG_SPEC.md
+
+# Editor / tooling
+.vscode/
+.idea/
+*.log
+
+# Compose/docker files themselves don't need to be in the build context copy
+docker-compose.yml
+Dockerfile

@@ -1,0 +1,166 @@
+# KnowRAG local/staging stack (spec §10).
+#
+# One service each for Postgres, Qdrant, Elasticsearch, and the FastAPI
+# app. Every datastore carries a `healthcheck:` and the app's
+# `depends_on:` gates on `condition: service_healthy` for all three, so
+# the app container does not even start until Postgres/Qdrant/ES are
+# actually ready to serve — this is what avoids the "app starts before
+# ES is up" flake §10 calls out by name (ES in particular can take much
+# longer than "the port is open" to report cluster health).
+#
+# Secrets: DATABASE_URL / GEMINI_API_KEY (and anything else app/core/config.py
+# reads) come from the repo-root `.env` via `env_file:` below — see
+# .env.example for the full list of variables. That file is never read or
+# altered by this compose file, only referenced by name. `required: false`
+# means a clean checkout without a `.env` yet still parses; the app
+# container just won't have GEMINI_API_KEY set until one is created from
+# .env.example.
+#
+# Format matters here in a way it does not for host-side runs: Compose's
+# env_file parser requires strict `KEY=value` with no space before the
+# `=`, while pydantic-settings' dotenv reader tolerates `KEY = value`. A
+# stray space therefore silently drops the variable in-container only,
+# which surfaces as a missing-field ValidationError at app startup while
+# every host-side script keeps working.
+#
+# In-network overrides: app/core/config.py defaults point at localhost, which
+# is correct for running scripts on the host but wrong from inside a
+# container on the compose network — there the datastores are reachable
+# by service name (postgres/qdrant/elasticsearch), not localhost. The
+# explicit `environment:` block on the `app` service below overrides
+# DATABASE_URL/QDRANT_URL/ES_URL accordingly; `environment:` always wins
+# over `env_file:` in Compose, so this override applies even though
+# app/.env may also define those same variables for host-side use.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: knowrag
+      POSTGRES_PASSWORD: knowrag
+      POSTGRES_DB: knowrag
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U knowrag -d knowrag"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  qdrant:
+    # Must stay >= the `query_points` API introduced in Qdrant 1.10, which
+    # is what the Qdrant adapter's semantic search calls. Pinned at v1.9.0
+    # the server answered 404 to every search: upsert and get_collections
+    # both worked, so ingestion and /health looked healthy while retrieval
+    # was dead. Kept in lockstep with the qdrant-client major.minor
+    # resolved by pyproject.toml (1.18) — the client and server are
+    # released together, and a client newer than its server degrades
+    # exactly this silently.
+    image: qdrant/qdrant:v1.18.0
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    ports:
+      - "6333:6333"
+    healthcheck:
+      # The qdrant image ships no curl/wget; it's a debian-slim base with
+      # bash available, so a plain TCP dial via bash's /dev/tcp is the
+      # most dependency-free readiness probe available.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/6333' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      xpack.security.http.ssl.enabled: "false"
+      # Sane bounded heap for local dev — left unset, ES defaults to 50%
+      # of host RAM, which is more than a laptop wants to hand a single
+      # container.
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    healthcheck:
+      # Elastic's own images ship curl; "yellow" (single-node, no
+      # replicas) counts as healthy, only "red" should fail the check.
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS http://localhost:9200/_cluster/health | grep -vq '\"status\":\"red\"'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./.env
+        required: false
+    environment:
+      # Overrides so the app talks to sibling containers by service name
+      # instead of localhost, regardless of what app/.env has for
+      # host-side runs of pg.py/vdb.py/es.py/retriver.py.
+      DATABASE_URL: postgresql://knowrag:knowrag@postgres:5432/knowrag
+      QDRANT_URL: http://qdrant:6333
+      ES_URL: http://elasticsearch:9200
+      # Shared HF/sentence-transformers cache volume mount point (see
+      # `model_cache` below) — matches the Dockerfile's ENV defaults, set
+      # again here for clarity since this is the load-bearing setting for
+      # the "don't re-download models on restart" requirement.
+      HF_HOME: /root/.cache/huggingface
+      SENTENCE_TRANSFORMERS_HOME: /root/.cache/torch/sentence_transformers
+      TRANSFORMERS_CACHE: /root/.cache/huggingface
+    volumes:
+      - model_cache:/root/.cache
+      # The §12.1 generation cache, bind-mounted to the host so it survives
+      # `docker compose run --rm`. Left inside the container it is discarded
+      # with every one-off eval run, which is exactly backwards: the cache
+      # exists to stop repeated eval runs re-spending free-tier quota, and
+      # that quota is metered per *day* (measured: 20 requests/day for
+      # gemini-2.5-flash), so a discarded cache can cost a full day of
+      # evaluation. Gitignored via `.cache/`.
+      - ./.cache:/app/.cache
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  qdrant_storage:
+  esdata:
+  model_cache:

@@ -1,0 +1,27 @@
+# Environment files
+.env
+.env.*
+# ...but the template must be committed — it is the only record of which
+# variables Settings requires.
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Dev-only cache for app/llm.py's generate_claims() (KNowRAG_SPEC.md §12.1) —
+# keeps repeated eval runs from re-spending free-tier Gemini quota.
+.cache/
+
+# Local test corpus. The tracked fixture is example_file.pdf; data.pdf is a
+# 3.7MB personal document that must not be committed. Nothing enforced this
+# before, so `git add .` would have shipped it.
+data.pdf
+
+# Per-run eval output (eval/run_faithfulness_eval.py --out). Regenerable and
+# machine-specific; the numbers that matter are recorded in PLAN.md, and
+# eval/results/baseline.md is the deliberate, committed report.
+eval/*_records.json

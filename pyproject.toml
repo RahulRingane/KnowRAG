@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "knowrag"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "python-dotenv>=1.0",
+    "elasticsearch>=8.13,<9",
+    "qdrant-client>=1.9",
+    "sentence-transformers>=3.0",
+    "llama-index-core>=0.10",
+    "llama-index-readers-file>=0.1",
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    # Required by FastAPI to parse multipart bodies — POST /ingest (§7)
+    # takes a PDF upload, and without this FastAPI raises at import time on
+    # the route's UploadFile parameter.
+    "python-multipart>=0.0.9",
+    # No LangChain. KNowRAG_SPEC.md §2 asks for a "LangChain (or
+    # LCEL-equivalent) orchestration layer", and §5 specifies the shape rather
+    # than the library: a pipeline whose verification step is "a separate,
+    # inspectable link rather than buried inside a monolithic chain".
+    #
+    # §12 then decided to call Gemini through `google-genai` directly, for the
+    # native `response_schema` JSON mode LangChain's wrapper does not expose.
+    # With generation bypassing it, the only job left was sequencing four
+    # function calls, which `app/services/query_service.py` does in plain
+    # Python. The dependency was declared but never imported, so it is gone.
+    #
+    # It reappears under [dev] via `ragas`, which genuinely uses it.
+    "google-genai>=1.0",
+    # Second generation provider (app/infrastructure/llm/, selected by
+    # LLM_PROVIDER).
+    # >=1.40 is where the client gained Structured Outputs support, which is
+    # what makes the OpenAI path's schema guarantee equivalent to Gemini's.
+    "openai>=1.40",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.2",
+    "tenacity>=8.2",
+    "structlog>=24.1",
+    # §9's six metrics are specified as "Prometheus-style counters/
+    # histograms"; this is the reference client for that exposition format.
+    "prometheus-client>=0.20",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-asyncio", "httpx", "ragas>=0.1"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+markers = [
+    # Tests that load real model weights (~400MB NLI download on first run).
+    # §8.1 requires the default suite to stay offline and fast, so these are
+    # opt-in: `pytest -m slow` to run them, `-m "not slow"` for the fast path.
+    "slow: loads real model weights; excluded from the fast offline suite",
+]

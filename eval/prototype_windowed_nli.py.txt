@@ -1,0 +1,84 @@
+"""OQ-3 Direction C prototype: score a claim against sentence windows.
+
+Wraps `app.verify.predict_nli` rather than editing it. Production stays
+untouched until the numbers justify a change — and per OQ-4, whatever this
+does to false support has to be attributable to this change alone.
+
+Mechanism: the cited chunk is split into sentence-ish units, sliding windows
+of consecutive units are built up to `MAX_WINDOW_CHARS`, and the claim is
+scored against every window *and* the full chunk. The best entailment wins;
+if nothing entails, the full-chunk verdict is returned unchanged so the
+CONTRADICTED path keeps seeing the whole premise.
+"""
+
+from __future__ import annotations
+
+import re
+
+from app import verify
+
+MAX_WINDOW_CHARS = 400
+
+_real_predict_nli = verify.predict_nli
+
+# Sentence-ish: real sentence enders, newlines, and the bullet character this
+# corpus uses for definition lists ("•It is the measure of system independence.").
+_SPLIT = re.compile(r"(?<=[.!?])\s+|\n+|(?=•)")
+
+stats = {"calls": 0, "model_calls": 0, "won_by_window": 0}
+
+
+def _units(text: str) -> list[str]:
+    return [u.strip() for u in _SPLIT.split(text) if u and u.strip()]
+
+
+def _windows(text: str) -> list[str]:
+    """Sliding windows of consecutive units, each under the char cap.
+
+    The full text is always included as a candidate, so this can only find
+    an entailment the unwindowed scorer would also have found, plus more.
+    """
+    units = _units(text)
+    windows: list[str] = []
+    for start in range(len(units)):
+        current: list[str] = []
+        for unit in units[start:]:
+            candidate = current + [unit]
+            if current and len(" ".join(candidate)) > MAX_WINDOW_CHARS:
+                break
+            current = candidate
+        if current:
+            window = " ".join(current)
+            if window not in windows:
+                windows.append(window)
+    if text not in windows:
+        windows.append(text)
+    return windows
+
+
+def windowed_predict_nli(premise: str, hypothesis: str):
+    stats["calls"] += 1
+
+    full_label, full_score = _real_predict_nli(premise=premise, hypothesis=hypothesis)
+    stats["model_calls"] += 1
+    if full_label == "entailment":
+        return full_label, full_score
+
+    best: tuple[str, float] | None = None
+    for window in _windows(premise):
+        if window == premise:
+            continue
+        label, score = _real_predict_nli(premise=window, hypothesis=hypothesis)
+        stats["model_calls"] += 1
+        if label == "entailment" and (best is None or score > best[1]):
+            best = (label, score)
+
+    if best is not None:
+        stats["won_by_window"] += 1
+        return best
+
+    return full_label, full_score
+
+
+def install() -> None:
+    verify.predict_nli = windowed_predict_nli

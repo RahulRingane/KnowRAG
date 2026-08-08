@@ -1,0 +1,325 @@
+[
+  {
+    "id": "adv-001",
+    "category": "adjacent_absent",
+    "question": "What year was the Texas Instruments TMS 1000, the world's first microcontroller, released?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Texas Instruments TMS 1000 is considered the world's first microcontroller [C1][C3]. [C1][C3]",
+    "supported": [
+      "Texas Instruments TMS 1000 is considered the world's first microcontroller [C1][C3]."
+    ],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the year the Texas Instruments TMS 1000 was released.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-002",
+    "category": "adjacent_absent",
+    "question": "How many system gates does a mid-range Xilinx Virtex FPGA provide?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context specifies that the largest FPGA in the Xilinx Virtex line provides eight million system gates, but it does not mention how many system gates a mid-range Xilinx Virtex FPGA provides.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-003",
+    "category": "adjacent_absent",
+    "question": "How many gates does a CPLD in the Xilinx CoolRunner series specifically contain?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the specific number of gates contained in a CPLD from the Xilinx CoolRunner series.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-004",
+    "category": "adjacent_absent",
+    "question": "What percentage improvement in execution speed (not code density) does the ARM Thumb 16-bit instruction set provide over 32-bit instructions?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The ARM Thumb 16-bit instruction set improves code density by about 30% over 32-bit fixed-length instructions.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "The provided context does not specify the percentage improvement in execution speed provided by the ARM Thumb 16-bit instruction set over 32-bit instructions.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-005",
+    "category": "adjacent_absent",
+    "question": "What clock speed, in MHz or GHz, does a RISC processor typically run at, per the document?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context states that a RISC processor is designed to execute instructions at a high clock speed, but it does not specify a clock speed in MHz or GHz.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-006",
+    "category": "adjacent_absent",
+    "question": "What is the maximum acceptable MTBF, in hours, for a mission-critical embedded system, per the document?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify a maximum acceptable Mean Time Between Failure (MTBF), in hours, for a mission-critical embedded system.",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C1] contradicts the claim"
+      },
+      {
+        "text": "The context states that MTBF gives the frequency of failures in hours, weeks, or months, but it specifies a target time only for MTTR, which should be on the order of minutes for critical application needs.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-007",
+    "category": "unsupported_combination",
+    "question": "Since ARM processors are specifically designed for low power consumption and DSPs are 2 to 3 times faster than general purpose microprocessors in signal processing, how much faster and more power-efficient is an ARM-based DSP than a standard microprocessor?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Digital Signal Processors are 2 to 3 times faster than general purpose microprocessors in signal processing applications. [C1]",
+    "supported": [
+      "Digital Signal Processors are 2 to 3 times faster than general purpose microprocessors in signal processing applications."
+    ],
+    "rejected": [
+      {
+        "text": "ARM processors are specifically designed to be small to reduce power consumption.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "Enhanced DSP instructions allow a faster-performing ARM processor in some cases to replace traditional combinations of a processor plus a DSP.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "The provided context does not specify exact speed or power efficiency metrics for an ARM-based DSP compared to a standard microprocessor.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-008",
+    "category": "unsupported_combination",
+    "question": "Given that Large Scale embedded systems use high-performance RISC processors and RISC processors have a large number of registers, how many registers does a typical Large Scale embedded system have?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Large Scale embedded systems are built around high performance 32 or 64 bit RISC processors or controllers, RSoC or multi-core processors, and PLD. [C3]",
+    "supported": [
+      "Large Scale embedded systems are built around high performance 32 or 64 bit RISC processors or controllers, RSoC or multi-core processors, and PLD."
+    ],
+    "rejected": [
+      {
+        "text": "RISC machines have a large general-purpose register set available.",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C1] contradicts the claim"
+      },
+      {
+        "text": "The provided context does not specify the exact number of registers in a typical Large Scale embedded system.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-009",
+    "category": "unsupported_combination",
+    "question": "Since Hard Real Time systems require deterministic execution and embedded systems with critical application needs should have an MTTR of the order of minutes, does that mean all Hard Real Time systems have an MTTR of a few minutes?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "For embedded systems with critical application needs, the Mean Time To Repair (MTTR) should be of the order of minutes. [C4]",
+    "supported": [
+      "For embedded systems with critical application needs, the Mean Time To Repair (MTTR) should be of the order of minutes."
+    ],
+    "rejected": [
+      {
+        "text": "Execution behavior is deterministic for Hard Real Time embedded systems.",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C1] contradicts the claim"
+      },
+      {
+        "text": "The provided context does not state or imply that all Hard Real Time systems have an MTTR of a few minutes.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-010",
+    "category": "unsupported_combination",
+    "question": "Because RISC uses fixed-length instructions and Thumb's 16-bit instructions improve code density by about 30%, does that mean converting a CISC processor's instruction set to Thumb would improve its code density by 30% as well?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "RISC processors use single, fixed-length instructions, whereas CISC processors use variable-length instructions.",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C2] contradicts the claim"
+      },
+      {
+        "text": "The Thumb 16-bit instruction set improves code density by about 30% over 32-bit fixed-length instructions on an ARM core.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "The provided context does not address whether converting a CISC processor's instruction set to Thumb would improve its code density by 30%.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-011",
+    "category": "unsupported_combination",
+    "question": "Since embedded systems are described as safety-critical and ASICs reduce system development cost by integrating several functions into a single chip, does using an ASIC make an embedded system safer?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "ok",
+    "answer": "Embedded systems are described as safety-critical, meaning they must not endanger human life and the environment. [C3] Application Specific Integrated Circuits (ASICs) integrate several functions into a single chip, thereby reducing system development costs. [C2]",
+    "supported": [
+      "Embedded systems are described as safety-critical, meaning they must not endanger human life and the environment.",
+      "Application Specific Integrated Circuits (ASICs) integrate several functions into a single chip, thereby reducing system development costs."
+    ],
+    "rejected": [
+      {
+        "text": "The provided context does not contain information regarding whether using an ASIC makes an embedded system safer.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-012",
+    "category": "out_of_scope",
+    "question": "What is the RISC-V instruction set architecture's licensing model?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not contain information about the RISC-V instruction set architecture's licensing model.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-013",
+    "category": "out_of_scope",
+    "question": "How does the document describe Kubernetes container orchestration for embedded Linux deployments?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not contain information about Kubernetes container orchestration or embedded Linux deployments.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-014",
+    "category": "out_of_scope",
+    "question": "What does the document say about the power consumption of a Raspberry Pi 4?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not contain information about the power consumption of a Raspberry Pi 4.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-015",
+    "category": "out_of_scope",
+    "question": "According to the document, what is the capital city of France?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not contain information about the capital city of France.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-016",
+    "category": "out_of_scope",
+    "question": "What does the document say about transformer-based large language model architectures?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not contain information about transformer-based large language model architectures.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  }
+]

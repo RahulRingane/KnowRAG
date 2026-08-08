@@ -1,0 +1,71 @@
+[
+  {
+    "model": "cross-encoder/nli-deberta-v3-base",
+    "params_m": 184,
+    "labels": [
+      "contradiction",
+      "entailment",
+      "neutral"
+    ],
+    "d1": 0.0,
+    "d4": 1.0,
+    "old": 0.125,
+    "d1_items": [],
+    "old_items": [
+      "adv-009",
+      "adv-011"
+    ],
+    "fr": 0.38461538461538464,
+    "refused": 15,
+    "answerable": 39,
+    "ms_per_call": 569.5,
+    "load_s": 4.5
+  },
+  {
+    "model": "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli",
+    "params_m": 184,
+    "labels": [
+      "entailment",
+      "neutral",
+      "contradiction"
+    ],
+    "d1": 0.0,
+    "d4": 0.9375,
+    "old": 0.25,
+    "d1_items": [],
+    "old_items": [
+      "adv-002",
+      "adv-004",
+      "adv-009",
+      "adv-011"
+    ],
+    "fr": 0.05128205128205128,
+    "refused": 2,
+    "answerable": 39,
+    "ms_per_call": 541.1,
+    "load_s": 4.6
+  },
+  {
+    "model": "facebook/bart-large-mnli",
+    "params_m": 407,
+    "labels": [
+      "contradiction",
+      "neutral",
+      "entailment"
+    ],
+    "d1": 0.0,
+    "d4": 1.0,
+    "old": 0.1875,
+    "d1_items": [],
+    "old_items": [
+      "adv-004",
+      "adv-009",
+      "adv-011"
+    ],
+    "fr": 0.20512820512820512,
+    "refused": 8,
+    "answerable": 39,
+    "ms_per_call": 1418.1,
+    "load_s": 4.2
+  }
+]
