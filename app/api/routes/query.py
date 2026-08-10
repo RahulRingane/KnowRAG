@@ -39,7 +39,15 @@ def query(
     request: QueryRequest,
     service: QueryService = Depends(get_query_service),
 ):
-    """Run the full fact-checked pipeline and return §6.4's contract.
+    """Classify the input, run the route it belongs to, return §6.4's contract.
+
+    The route body does not classify or branch — `QueryService.run()` does
+    both, which is what keeps this endpoint and `python -m app.cli.query` on
+    one code path (§7.2). A question is answered from the corpus; a statement
+    is verified against it and comes back with a single verdict on the
+    caller's own sentence. Which happened is on `input_type`, and the response
+    shape is identical either way, so a client that predates routing is
+    unaffected.
 
     Defined as `def`, not `async def`, so FastAPI runs it in a threadpool:
     retrieval, the cross-encoder rerank and the NLI verification pass are
@@ -67,6 +75,11 @@ def query_stream(
     because it needs the finished answer; nothing before the `verification`
     event has been fact-checked, and a client must not present `token`
     output as an answer.
+
+    Routed identically to `POST /query`. An input classified as a statement
+    emits zero `token` events — that route runs no generation — and goes
+    straight from `retrieval` to `verification`, which is why `token` has
+    always been documented as `*` and not `+`.
     """
 
     def event_stream():

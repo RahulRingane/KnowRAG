@@ -28,10 +28,11 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Literal
+from typing import NamedTuple
 
-from app.domain.models import Chunk, Claim, ClaimVerdict, chunk_key
-from app.domain.ports import EntailmentScorer, NLILabel
+from app.domain.conflation import detect_composition_mismatch
+from app.domain.models import Chunk, Claim, ClaimVerdict, ScoringEvent, chunk_key
+from app.domain.ports import EntailmentScorer, NLILabel, ScoringObserver
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +140,34 @@ def _windows(text: str) -> list[str]:
     return windows
 
 
+class _Scored(NamedTuple):
+    """One scored citation: what was reported, and what it resolved to.
+
+    `event` is the record handed to the log and the observer; `chunk` is kept
+    beside it because §6.4's `chunk_ids` needs the resolved chunk and `None`
+    is how a citation that resolved to nothing is represented.
+    """
+
+    event: ScoringEvent
+    chunk: Chunk | None
+
+
+def _entailment_rank(scored: _Scored) -> float:
+    """The key the best-evidence race sorts on.
+
+    §6.2 already ranks anything not labeled "entailment" at -1, so a confident
+    *neutral* loses to a marginal entailment. A flagged entailment now joins
+    them, which is the whole of the composition guard's effect on the decision:
+    it removes a pair from contention rather than inventing a verdict of its
+    own. Everything downstream — the contradiction path, the threshold, the
+    reasons — is untouched, so a corpus that genuinely refutes the claim is
+    reached by §6.2's existing branch 4 rather than by anything here.
+    """
+    if scored.event.label != "entailment" or scored.event.flagged:
+        return -1.0
+    return scored.event.score
+
+
 class ClaimVerifier:
     """§6.2's decision procedure, over an injected `EntailmentScorer`.
 
@@ -154,7 +183,12 @@ class ClaimVerifier:
     cannot change underneath a request that is already running.
     """
 
-    def __init__(self, scorer: EntailmentScorer, threshold: float | None = None):
+    def __init__(
+        self,
+        scorer: EntailmentScorer,
+        threshold: float | None = None,
+        observer: ScoringObserver | None = None,
+    ):
         if threshold is None:
             # Imported here, not at module scope: the domain layer states its
             # own default without making `import app.domain.verification`
@@ -167,6 +201,7 @@ class ClaimVerifier:
 
         self._scorer = scorer
         self.threshold = threshold
+        self._observer = observer
 
     # --- scoring -----------------------------------------------------------
 
@@ -201,26 +236,96 @@ class ClaimVerifier:
             return best
         return label, score
 
-    def _score_citations(
-        self, claim: Claim, chunks_by_tag: dict[str, Chunk]
-    ) -> list[tuple[str, NLILabel | Literal["MISSING_CHUNK"], float, Chunk | None]]:
-        """Score every cited tag against its chunk.
+    def _notify(self, event: ScoringEvent) -> None:
+        """Report one scored pair to the log and to any injected observer.
 
-        Returns one `(tag, label, score, chunk)` tuple per citation, in citation
-        order. A tag with no matching chunk gets `("MISSING_CHUNK", 0.0, None)`
-        — recorded, not raised — so a bad/stale citation tag from the LLM's
-        output can never crash verification.
+        The observer is a diagnostic side channel — a terminal watching a CLI
+        run — so its failure must never become the request's failure. Anything
+        it raises is logged and dropped; a broken renderer costs a trace line,
+        not a verdict.
+        """
+        from app.core.observability import get_logger
+
+        get_logger(__name__).info(
+            "nli_scoring",
+            tag=event.tag,
+            label=event.label,
+            score=round(event.score, 4),
+            chunk_id=(
+                chunk_key(event.document_id, event.chunk_index)
+                if event.document_id is not None and event.chunk_index is not None
+                else None
+            ),
+            premise_chars=len(event.premise),
+            hypothesis=event.hypothesis,
+            mismatch=event.mismatch_reason,
+        )
+
+        if event.flagged:
+            logger.warning(
+                "identity/composition conflation detected: [%s] scored entailment %.3f for "
+                "hypothesis %r, but %s — this entailment is excluded from the "
+                "best-evidence race (see app.domain.conflation)",
+                event.tag,
+                event.score,
+                event.hypothesis,
+                event.mismatch_reason,
+            )
+
+        if self._observer is None:
+            return
+        try:
+            self._observer(event)
+        except Exception:  # noqa: BLE001 — see docstring
+            logger.exception("Scoring observer raised; continuing verification")
+
+    def _score_citations(self, claim: Claim, chunks_by_tag: dict[str, Chunk]) -> list[_Scored]:
+        """Score every cited tag against its chunk, and screen each entailment.
+
+        Returns one `_Scored` per citation, in citation order. A tag with no
+        matching chunk gets label `"MISSING_CHUNK"` and score 0.0 — recorded,
+        not raised — so a bad/stale citation tag from the LLM's output can
+        never crash verification.
+
+        The conflation screen (`app.domain.conflation`) runs **only on pairs
+        the model labeled "entailment"**. That is not an optimization: the
+        guard exists to stop a spurious entailment from winning the
+        best-evidence race, and a finding against a neutral or contradiction
+        pair could not change any verdict while still appearing in the trace as
+        if it had. Reporting a rejection that rejected nothing is how a
+        diagnostic starts lying.
         """
         hypothesis = strip_citation_tags(claim.text)
 
-        scored: list[tuple[str, NLILabel | Literal["MISSING_CHUNK"], float, Chunk | None]] = []
+        scored: list[_Scored] = []
         for tag in claim.citations:
             chunk = chunks_by_tag.get(tag)
             if chunk is None:
-                scored.append((tag, "MISSING_CHUNK", 0.0, None))
+                event = ScoringEvent(
+                    tag=tag, premise="", hypothesis=hypothesis, label="MISSING_CHUNK", score=0.0
+                )
+                scored.append(_Scored(event, None))
+                self._notify(event)
                 continue
+
             label, score = self.score(chunk.text, hypothesis)
-            scored.append((tag, label, score, chunk))
+            mismatch = (
+                detect_composition_mismatch(chunk.text, hypothesis)
+                if label == "entailment"
+                else None
+            )
+            event = ScoringEvent(
+                tag=tag,
+                premise=chunk.text,
+                hypothesis=hypothesis,
+                label=label,
+                score=score,
+                document_id=chunk.document_id,
+                chunk_index=chunk.chunk_index,
+                mismatch_reason=mismatch.describe() if mismatch is not None else None,
+            )
+            scored.append(_Scored(event, chunk))
+            self._notify(event)
         return scored
 
     # --- §6.2 decision -----------------------------------------------------
@@ -233,12 +338,24 @@ class ClaimVerifier:
         1. No citations at all -> UNSUPPORTED, reason="no citation provided".
         2. A cited tag with no matching chunk in `chunks_by_tag` -> scored 0.0
            and recorded (see `_score_citations`); never raises.
-        3. The best-scoring entailment among cited chunks is >= `self.threshold`
-           -> SUPPORTED.
+        3. The best-scoring *unflagged* entailment among cited chunks is >=
+           `self.threshold` -> SUPPORTED.
         4. Otherwise, if any cited chunk was scored "contradiction" -> CONTRADICTED
            (logged at warning level — usually means the generator misread a
            chunk, e.g. a sign flip or wrong date).
-        5. Otherwise -> UNSUPPORTED.
+        5. Otherwise, if every entailment there was got flagged by the
+           composition guard -> UNSUPPORTED, naming the rejected score.
+        6. Otherwise -> UNSUPPORTED.
+
+        Path 5 is new (2026-08-09) and path 3 gained one word, which together
+        are the whole of `app.domain.conflation`'s effect on this procedure.
+        Note the order: **4 still precedes 5**. When the guard removes a
+        conflated entailment and the corpus also contains a chunk that
+        genuinely contradicts the claim, the verdict is CONTRADICTED, carrying
+        that chunk's real score — not an UNSUPPORTED derived from a regex.
+        The measured case is `"embedded system is an operating system"`, where
+        suppressing a 0.987 conflation lets a 0.802 contradiction that §6.2
+        had always computed and never reached decide the verdict.
         """
         # OQ-5, and this branch must come first. A refusal is a statement about the
         # *context* ("the context does not specify the release year"), not a
@@ -283,18 +400,23 @@ class ClaimVerifier:
         # that actually resolved to a chunk — i.e. the chunks actually used in
         # scoring, per §6.4's comment on `ClaimVerdict.chunk_ids`. Missing tags
         # contribute no chunk_id (there is no chunk to key).
-        chunk_ids = [
-            chunk_key(c.document_id, c.chunk_index) for (_, _, _, c) in scored if c is not None
-        ]
+        chunk_ids = [chunk_key(s.chunk.document_id, s.chunk.chunk_index) for s in scored if s.chunk]
 
-        # Mirrors §6.2's pseudocode exactly: among all scored citations, pick
-        # the one with the highest entailment score; anything not labeled
-        # "entailment" loses the race unconditionally (key = -1).
-        best_tag, best_label, best_score, _ = max(
-            scored, key=lambda s: s[2] if s[1] == "entailment" else -1
-        )
+        # Mirrors §6.2's pseudocode: among all scored citations, pick the one
+        # with the highest entailment score; anything not labeled "entailment"
+        # — and, since 2026-08-09, anything the composition guard flagged —
+        # loses the race unconditionally. See `_entailment_rank`.
+        best = max(scored, key=_entailment_rank)
+        best_tag, best_label, best_score = best.event.tag, best.event.label, best.event.score
 
-        if best_label == "entailment" and best_score >= self.threshold:
+        # `_entailment_rank(best)` is `best_score` for a surviving entailment
+        # and -1.0 otherwise, so this one comparison says "an unflagged
+        # entailment cleared the threshold" and nothing else. Spelling it as
+        # `best_label == "entailment" and best_score >= threshold` would read
+        # the same and be wrong: `max` returns the *first* element when every
+        # key ties at -1, which after flagging can be an entailment whose score
+        # is exactly the one that must not count.
+        if _entailment_rank(best) >= self.threshold:
             return ClaimVerdict(
                 text=claim.text,
                 status="SUPPORTED",
@@ -305,7 +427,7 @@ class ClaimVerifier:
             )
 
         contradictions = [
-            (tag, score) for (tag, label, score, _) in scored if label == "contradiction"
+            (s.event.tag, s.event.score) for s in scored if s.event.label == "contradiction"
         ]
         if contradictions:
             worst_tag, worst_score = max(contradictions, key=lambda t: t[1])
@@ -326,7 +448,28 @@ class ClaimVerifier:
                 reason=f"cited chunk [{worst_tag}] contradicts the claim",
             )
 
-        missing_tags = [tag for (tag, _, _, c) in scored if c is None]
+        # Every entailment there was got flagged, and no contradiction outranked
+        # it. Returned here rather than folded into the reason ladder below
+        # because the score to report is the *flagged* one — the number a reader
+        # would otherwise go looking for when they see a confident claim come
+        # back unsupported — and `best` is not it: with every key tied at -1,
+        # `max` returned whichever citation came first.
+        flagged = [s for s in scored if s.event.flagged]
+        if flagged and _entailment_rank(best) < 0:
+            rejected = max(flagged, key=lambda s: s.event.score)
+            return ClaimVerdict(
+                text=claim.text,
+                status="UNSUPPORTED",
+                citations=claim.citations,
+                evidence_score=rejected.event.score,
+                chunk_ids=chunk_ids,
+                reason=(
+                    f"entailment {rejected.event.score:.3f} on [{rejected.event.tag}] rejected: "
+                    f"{rejected.event.mismatch_reason}"
+                ),
+            )
+
+        missing_tags = [s.event.tag for s in scored if s.chunk is None]
         if missing_tags and len(missing_tags) == len(scored):
             reason = f"cited chunk(s) not found in retrieved context: {', '.join(missing_tags)}"
         elif best_label == "entailment":

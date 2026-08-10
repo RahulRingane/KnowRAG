@@ -30,6 +30,14 @@ from typing import Literal
 from pydantic import BaseModel, computed_field
 
 
+# What kind of thing the caller sent. "question" asks something and is
+# answered from the corpus; "fact" asserts something and is checked against
+# it. Decided by `app.domain.classification`, acted on by
+# `app.services.query_service`, and reported on the wire so a caller can see
+# which of the two routes produced what it is holding.
+InputType = Literal["question", "fact"]
+
+
 def chunk_key(document_id: int, chunk_index: int) -> str:
     """The one canonical string key for a chunk, everywhere.
 
@@ -70,6 +78,38 @@ class ClaimVerdict(BaseModel):
     reason: str | None = None
 
 
+class ScoringEvent(BaseModel):
+    """One `(premise, hypothesis)` pair as it was actually handed to NLI.
+
+    Diagnostic, and deliberately **not** part of §6.4 — nothing here reaches
+    the wire. It exists because the single most useful question about a
+    surprising verdict ("what exactly did the model read?") was previously
+    unanswerable without a debugger: `ClaimVerdict` records the score and the
+    chunk id, but not the premise text, not the tag-resolved pairing, and not
+    the fact that the hypothesis is the claim with its `[Cn]` tags stripped.
+
+    `premise` is the full chunk text, uncut. Truncation is a presentation
+    decision and belongs to whoever renders this, not to the record of what
+    was scored.
+
+    `mismatch_reason` is `app.domain.conflation`'s finding, already rendered,
+    or None when the pair drew no objection.
+    """
+
+    tag: str
+    premise: str
+    hypothesis: str
+    label: str  # NLILabel, or "MISSING_CHUNK" when the tag resolved to nothing
+    score: float
+    document_id: int | None = None
+    chunk_index: int | None = None
+    mismatch_reason: str | None = None
+
+    @property
+    def flagged(self) -> bool:
+        return self.mismatch_reason is not None
+
+
 class FactCheckedResponse(BaseModel):
     """Per §6.4, verbatim, plus §6.3's `rejected_claims` as a derived field.
 
@@ -86,9 +126,33 @@ class FactCheckedResponse(BaseModel):
     §6.3 exists to prevent.
     """
 
-    question: str
-    answer: str  # only SUPPORTED claims, reassembled
-    state: Literal["ok", "insufficient_evidence"]
+    # Which route produced this response (added 2026-08-09 with query/fact
+    # routing). One response type serves both routes rather than a union: the
+    # fields below mean the same thing on either path — `question` holds what
+    # the caller sent, `claims` is the audit trail, `retrieved_chunk_ids` is
+    # the evidence — so a second type would duplicate all of them to vary one.
+    # Every existing client keeps working unchanged, and one that cares about
+    # the distinction reads this field.
+    #
+    # Defaulted to "question" because that is exactly what every response
+    # meant before the fact route existed, so an older cached or hand-built
+    # payload deserializes to its original meaning rather than to a guess.
+    input_type: InputType = "question"
+    question: str  # the question asked, or on the fact route the statement checked
+    # The question route reassembles this from the generated claims — SUPPORTED
+    # and UNSUPPORTED both, since on that route the entailment score grades an
+    # answer rather than gating it (see `app.domain.assembly`). The fact route
+    # puts a sentence about the evidence here instead. Either way, what a claim
+    # scored is on the claim, in `claims`.
+    answer: str
+    # "contradicted" is emitted by the fact route only, and is the reason
+    # `state` grew a third value instead of folding into the existing two.
+    # A statement the corpus actively refutes is not the same finding as one
+    # the corpus is silent on, and reporting a refutation as
+    # "insufficient_evidence" would understate it in exactly the direction
+    # this system exists to prevent. The question route's `state` logic is
+    # unchanged and still keys on SUPPORTED alone, so it never emits this.
+    state: Literal["ok", "insufficient_evidence", "contradicted"]
     claims: list[ClaimVerdict]  # full audit trail, including rejected ones
     retrieved_chunk_ids: list[str]  # canonical keys from `chunk_key()`
     latency_ms: dict[str, float]  # per-stage timing for observability
@@ -97,13 +161,22 @@ class FactCheckedResponse(BaseModel):
     @property
     def rejected_claims(self) -> list[ClaimVerdict]:
         """Assertions that failed verification — UNSUPPORTED and CONTRADICTED
-        — each carrying the `reason` it was rejected for (§6.3).
+        — each carrying the `reason` it failed for (§6.3).
 
-        **Contract change 2026-08-03 (OQ-5): REFUSAL claims are no longer
-        included here.** They were, when a refusal was just an assertion that
-        happened to fail. A refusal is not a filtered-out claim: nothing was
-        dropped and there is no `reason`, so listing it beside genuine
-        rejections misreports what happened. Refusals are on `refusals`.
+        "Failed verification" and "kept out of the answer" were the same set
+        until 2026-08-09 and no longer are. On the fact route they still
+        coincide. On the question route only CONTRADICTED is withheld; an
+        UNSUPPORTED claim appears in `answer` *and* here, which is the intended
+        reading — this list is what the NLI model could not confirm, so a
+        caller that wants to hedge, footnote, or re-ask has it, and a caller
+        that just wants the answer is no longer denied one. See
+        `app.domain.assembly`.
+
+        **Contract change 2026-08-03 (OQ-5): REFUSAL claims are not included
+        here.** They were, when a refusal was just an assertion that happened
+        to fail. A refusal is not a filtered-out claim: nothing was dropped and
+        there is no `reason`, so listing it beside genuine rejections
+        misreports what happened. Refusals are on `refusals`.
         """
         return [c for c in self.claims if c.status in ("UNSUPPORTED", "CONTRADICTED")]
 
@@ -119,6 +192,22 @@ class FactCheckedResponse(BaseModel):
         from a well-evidenced one.
         """
         return [c for c in self.claims if c.status == "REFUSAL"]
+
+
+class ClassifiedInput(BaseModel):
+    """One classification decision: what the input is, and the input itself.
+
+    Carries `text` alongside the verdict rather than returning a bare
+    `InputType` so the classifier is the single thing that decides what the
+    downstream route operates on. A future implementation that normalises its
+    input — strips a "hey, " preamble, unwraps a quoted statement — changes
+    what the pipeline sees by returning it here, with no caller learning that
+    normalisation happened at all. A bare label would leave every call site
+    reaching back for the original string and quietly bypassing that.
+    """
+
+    input_type: InputType
+    text: str
 
 
 class Claim(BaseModel):

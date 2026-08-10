@@ -285,8 +285,9 @@ def test_unknown_document_is_404():
 # --- POST /query -------------------------------------------------------------
 
 
-def _response(state, claims):
+def _response(state, claims, input_type="question"):
     return FactCheckedResponse(
+        input_type=input_type,
         question="q",
         answer="a" if state == "ok" else "Insufficient evidence.",
         state=state,
@@ -311,9 +312,34 @@ def test_query_returns_the_fact_checked_contract():
     assert response.status_code == 200
     body = response.json()
     assert set(body) >= {
-        "question", "answer", "state", "claims", "retrieved_chunk_ids",
-        "latency_ms", "rejected_claims",
+        "input_type", "question", "answer", "state", "claims",
+        "retrieved_chunk_ids", "latency_ms", "rejected_claims",
     }
+
+
+def test_the_response_reports_which_route_produced_it():
+    """Classification and routing happen inside `QueryService`, so the route
+    body has nothing to branch on — but the caller must still be able to tell
+    an answer to a question from a verdict on a statement."""
+    verdict = _verdict("SUPPORTED", "RISC has instruction pipelining")
+    _use(get_query_service, _StubQuery(run=lambda q: _response("ok", [verdict], "fact")))
+
+    body = client.post("/query", json={"question": "RISC has instruction pipelining"}).json()
+
+    assert body["input_type"] == "fact"
+    assert len(body["claims"]) == 1
+
+
+def test_a_contradicted_statement_is_a_200_with_its_own_state():
+    """The corpus refuting a caller's statement is a finding, not an error —
+    the same reasoning that makes `insufficient_evidence` a 200."""
+    verdict = _verdict("CONTRADICTED", "RISC has no pipelining", "cited chunk [C1] contradicts")
+    _use(get_query_service, _StubQuery(run=lambda q: _response("contradicted", [verdict], "fact")))
+
+    response = client.post("/query", json={"question": "RISC has no pipelining"})
+
+    assert response.status_code == 200
+    assert response.json()["state"] == "contradicted"
 
 
 def test_unanswerable_question_is_insufficient_evidence_with_reasons():
