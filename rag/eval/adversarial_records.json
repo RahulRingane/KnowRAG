@@ -1,0 +1,307 @@
+[
+  {
+    "id": "adv-001",
+    "category": "adjacent_absent",
+    "question": "What year was the Texas Instruments TMS 1000, the world's first microcontroller, released?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the release year of the Texas Instruments TMS 1000.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-002",
+    "category": "adjacent_absent",
+    "question": "How many system gates does a mid-range Xilinx Virtex FPGA provide?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the number of system gates a mid-range Xilinx Virtex FPGA provides.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-003",
+    "category": "adjacent_absent",
+    "question": "How many gates does a CPLD in the Xilinx CoolRunner series specifically contain?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the exact number of gates a CPLD in the Xilinx Cool-Runner series specifically contains.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      },
+      {
+        "text": "CPLDs generally offer up to about 10,000 gates.",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-004",
+    "category": "adjacent_absent",
+    "question": "What percentage improvement in execution speed (not code density) does the ARM Thumb 16-bit instruction set provide over 32-bit instructions?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the percentage improvement in execution speed that the ARM Thumb 16-bit instruction set provides over 32-bit instructions.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-005",
+    "category": "adjacent_absent",
+    "question": "What clock speed, in MHz or GHz, does a RISC processor typically run at, per the document?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the typical clock speed of a RISC processor in MHz or GHz.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-006",
+    "category": "adjacent_absent",
+    "question": "What is the maximum acceptable MTBF, in hours, for a mission-critical embedded system, per the document?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the maximum acceptable Mean Time Between Failure (MTBF) in hours for a mission-critical embedded system.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-007",
+    "category": "unsupported_combination",
+    "question": "Since ARM processors are specifically designed for low power consumption and DSPs are 2 to 3 times faster than general purpose microprocessors in signal processing, how much faster and more power-efficient is an ARM-based DSP than a standard microprocessor?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": null,
+    "answer": null,
+    "supported": [],
+    "rejected": [],
+    "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash\\nPlease retry in 49.965176875s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '49s'}]}}"
+  },
+  {
+    "id": "adv-008",
+    "category": "unsupported_combination",
+    "question": "Given that Large Scale embedded systems use high-performance RISC processors and RISC processors have a large number of registers, how many registers does a typical Large Scale embedded system have?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "Large Scale Embedded Systems are built around high-performance 32 or 64 bit RISC processors/controllers [C3].",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "RISC machines have a large general-purpose register set [C1].",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C1] contradicts the claim"
+      },
+      {
+        "text": "The provided context does not specify the exact number of registers a typical Large Scale embedded system has.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-009",
+    "category": "unsupported_combination",
+    "question": "Since Hard Real Time systems require deterministic execution and embedded systems with critical application needs should have an MTTR of the order of minutes, does that mean all Hard Real Time systems have an MTTR of a few minutes?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not state that all Hard Real Time systems have a Mean Time To Repair (MTTR) of a few minutes.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      },
+      {
+        "text": "Hard Real Time systems are characterized by critical response time requirements and deterministic execution behavior, where missing a deadline can lead to catastrophic consequences [C1][C2].",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C1] contradicts the claim"
+      },
+      {
+        "text": "For embedded systems with critical application needs, the Mean Time To Repair (MTTR) should be on the order of minutes [C4].",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-010",
+    "category": "unsupported_combination",
+    "question": "Because RISC uses fixed-length instructions and Thumb's 16-bit instructions improve code density by about 30%, does that mean converting a CISC processor's instruction set to Thumb would improve its code density by 30% as well?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "RISC processors utilize single, fixed-length instructions [C2][C3].",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C2] contradicts the claim"
+      },
+      {
+        "text": "The Thumb 16-bit instruction set enhances the ARM processor core, allowing it to execute either 16- or 32-bit instructions [C1].",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "The 16-bit Thumb instructions improve code density by approximately 30% compared to 32-bit fixed-length instructions [C1].",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "CISC processors often have variable-sized instructions that take multiple cycles to execute [C3].",
+        "status": "UNSUPPORTED",
+        "reason": "no cited chunk entails this claim"
+      },
+      {
+        "text": "The provided context does not specify whether converting a CISC processor's instruction set to Thumb would improve its code density by 30% [C1][C2][C3].",
+        "status": "CONTRADICTED",
+        "reason": "cited chunk [C2] contradicts the claim"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-011",
+    "category": "unsupported_combination",
+    "question": "Since embedded systems are described as safety-critical and ASICs reduce system development cost by integrating several functions into a single chip, does using an ASIC make an embedded system safer?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify whether using an Application Specific Integrated Circuit (ASIC) makes an embedded system safer.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-012",
+    "category": "out_of_scope",
+    "question": "What is the RISC-V instruction set architecture's licensing model?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the RISC-V instruction set architecture's licensing model.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-013",
+    "category": "out_of_scope",
+    "question": "How does the document describe Kubernetes container orchestration for embedded Linux deployments?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not describe Kubernetes container orchestration for embedded Linux deployments.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-014",
+    "category": "out_of_scope",
+    "question": "What does the document say about the power consumption of a Raspberry Pi 4?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": null,
+    "answer": null,
+    "supported": [],
+    "rejected": [],
+    "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash\\nPlease retry in 51.72917332s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '51s'}]}}"
+  },
+  {
+    "id": "adv-015",
+    "category": "out_of_scope",
+    "question": "According to the document, what is the capital city of France?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not specify the capital city of France.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  },
+  {
+    "id": "adv-016",
+    "category": "out_of_scope",
+    "question": "What does the document say about transformer-based large language model architectures?",
+    "expected_state": "insufficient_evidence",
+    "actual_state": "insufficient_evidence",
+    "answer": "Insufficient evidence in the retrieved context to answer this question.",
+    "supported": [],
+    "rejected": [
+      {
+        "text": "The provided context does not contain information about transformer-based large language model architectures.",
+        "status": "UNSUPPORTED",
+        "reason": "no citation provided"
+      }
+    ],
+    "error": null
+  }
+]
