@@ -17,6 +17,7 @@ one and cannot tell a hybrid retriever from a plain one.
 
 from __future__ import annotations
 
+from app.core import timing
 from app.core.config import settings
 from app.core.observability import get_logger, observe, retrieval_latency_seconds
 from app.domain.models import Chunk, chunk_key
@@ -54,8 +55,14 @@ class HybridRetriever:
     def search(self, query: str, k: int = 0) -> list[Chunk]:
         k = k or settings.top_k_rerank
 
-        semantic_docs = self._semantic.search(query, self._candidate_k)
-        keyword_docs = self._keyword.search(query, self._candidate_k)
+        # Timed separately because they answer different questions when this
+        # gets slow: the semantic leg embeds the query with a local model, the
+        # keyword leg is a network round-trip to Elasticsearch. One number over
+        # both cannot tell a slow model from a slow datastore.
+        with timing.timed("search_semantic_ms"):
+            semantic_docs = self._semantic.search(query, self._candidate_k)
+        with timing.timed("search_keyword_ms"):
+            keyword_docs = self._keyword.search(query, self._candidate_k)
 
         candidates: dict[tuple[int, int], Chunk] = {}
 
@@ -72,8 +79,23 @@ class HybridRetriever:
             logger.warning("hybrid_search_empty", k=k)
             return []
 
-        with observe(retrieval_latency_seconds, path="hybrid"):
-            scores = self._get_reranker().predict([(query, doc.text) for doc in docs])
+        # Resolved *before* the timed span, not inside it. On a cold process
+        # `_get_reranker()` loads a cross-encoder, and that load already reports
+        # itself as `model_load_ms`; timing it here too would have it counted
+        # under both keys, which breaks the one invariant the breakdown rests on
+        # — that the keys are disjoint and sum to the wall time. Measured on the
+        # first run after this was instrumented: a 6.8s reranker load turned a
+        # 24s query into a reported 38.9s. `rerank_ms` is the forward pass and
+        # nothing else.
+        reranker = self._get_reranker()
+
+        # `rerank_ms` is reported as its own stage rather than folded into
+        # retrieval: it is a cross-encoder forward pass over every candidate,
+        # so it scales with `top_k_retrieval` while the two searches do not.
+        # Reported to the caller by `app.services.query_service`, which
+        # subtracts it back out of `retrieval_ms` so the two stay disjoint.
+        with observe(retrieval_latency_seconds, path="hybrid"), timing.timed("rerank_ms"):
+            scores = reranker.predict([(query, doc.text) for doc in docs])
 
             for doc, score in zip(docs, scores):
                 doc.rerank_score = float(score)
@@ -86,8 +108,19 @@ class HybridRetriever:
         # answer is wrong, the first question is whether the right chunk was
         # retrieved and ranked away. Logging the kept scores alongside the
         # candidate count answers that without a re-run.
+        # The two legs' timings are logged rather than returned. They overlap
+        # `retrieval_ms` (they are what it is made of), so putting them on
+        # `latency_ms` would break its disjointness; here they answer "which
+        # leg" for anyone reading a slow retrieval, which is what they are for.
+        # `search_semantic_ms` carries the embedding model's cold load on a
+        # first call — see `model_load_ms` on the response.
+        stage_costs = timing.snapshot()
+
         logger.info(
             "hybrid_search",
+            semantic_ms=round(stage_costs.get("search_semantic_ms", 0.0), 1),
+            keyword_ms=round(stage_costs.get("search_keyword_ms", 0.0), 1),
+            rerank_ms=round(stage_costs.get("rerank_ms", 0.0), 1),
             semantic_count=len(semantic_docs),
             keyword_count=len(keyword_docs),
             candidates=len(docs),

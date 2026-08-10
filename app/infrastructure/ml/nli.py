@@ -18,10 +18,18 @@ from __future__ import annotations
 
 import logging
 
+from app.core import timing
 from app.core.config import settings
 from app.domain.ports import NLILabel
+from app.infrastructure.ml.loading import from_cache_first, guard
 
 logger = logging.getLogger(__name__)
+
+# See `loading.guard`. The `_nli_model is None` check below is a check-then-act
+# race without it: two threads both see `None`, both load ~400MB, and both
+# assign — harmless in outcome, expensive in exactly the phase this whole
+# change is about.
+_nli_lock = guard()
 
 # Label order is a property of the checkpoint and NOTHING ELSE. It was
 # previously a hardcoded ("contradiction", "entailment", "neutral") described
@@ -81,25 +89,33 @@ def get_nli_model():
     dependency installed at all.
     """
     global _nli_model, _nli_labels
-    if _nli_model is None:
-        import torch
-        from sentence_transformers import CrossEncoder
+    with _nli_lock:
+        if _nli_model is not None:
+            return _nli_model
 
-        logger.info("Loading NLI model %s", settings.nli_model)
-        model = CrossEncoder(settings.nli_model)
+        # Timed inside the `is None` branch, so a warm process records nothing
+        # here and `model_load_ms` means the cold-start cost and only that.
+        # Without this the whole load landed inside `verification_ms`, which
+        # made a cold run look like slow NLI scoring rather than a slow load.
+        with timing.timed("model_load_ms"):
+            import torch
+            from sentence_transformers import CrossEncoder
 
-        # This checkpoint is published in float16. x86 has no native fp16
-        # compute, so torch emulates it: measured 3112ms per call versus 525ms
-        # for the identical weights in fp32, producing byte-identical scores
-        # (0.943/0.946/0.570 either way). Without this cast the model is ~6x
-        # slower than the one it replaces for no accuracy gain whatsoever.
-        if next(model.model.parameters()).dtype != torch.float32:
-            logger.info("Casting %s to float32 (fp16 is emulated on CPU)", settings.nli_model)
-            model.model.to(torch.float32)
+            logger.info("Loading NLI model %s", settings.nli_model)
+            model = from_cache_first(CrossEncoder, settings.nli_model)
 
-        _nli_labels = _derive_labels(model)
-        logger.info("NLI label order for %s: %s", settings.nli_model, _nli_labels)
-        _nli_model = model
+            # This checkpoint is published in float16. x86 has no native fp16
+            # compute, so torch emulates it: measured 3112ms per call versus 525ms
+            # for the identical weights in fp32, producing byte-identical scores
+            # (0.943/0.946/0.570 either way). Without this cast the model is ~6x
+            # slower than the one it replaces for no accuracy gain whatsoever.
+            if next(model.model.parameters()).dtype != torch.float32:
+                logger.info("Casting %s to float32 (fp16 is emulated on CPU)", settings.nli_model)
+                model.model.to(torch.float32)
+
+            _nli_labels = _derive_labels(model)
+            logger.info("NLI label order for %s: %s", settings.nli_model, _nli_labels)
+            _nli_model = model
     return _nli_model
 
 

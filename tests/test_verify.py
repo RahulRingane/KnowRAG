@@ -337,7 +337,7 @@ def test_assemble_response_ok_state_when_some_supported():
             chunk_ids=["1:0"],
         ),
         ClaimVerdict(
-            text="Rejected.",
+            text="Unconfirmed.",
             status="UNSUPPORTED",
             citations=[],
             evidence_score=None,
@@ -349,25 +349,46 @@ def test_assemble_response_ok_state_when_some_supported():
     response = assemble_response("What is RISC?", verdicts, ["1:0"], {"total": 12.3})
 
     assert response.state == "ok"
-    assert response.answer == "Kept. [C1]"
-    # Full audit trail retained, including the rejected claim and its reason.
+    # Both sentences reach the reader: the threshold grades the question
+    # route's answer, it does not gate it (2026-08-09).
+    assert response.answer == "Kept. [C1] Unconfirmed."
+    # Full audit trail retained, including why the second one was not confirmed.
     assert len(response.claims) == 2
-    rejected = [c for c in response.claims if c.status == "UNSUPPORTED"]
-    assert rejected[0].reason == "no citation provided"
+    unconfirmed = [c for c in response.claims if c.status == "UNSUPPORTED"]
+    assert unconfirmed[0].reason == "no citation provided"
 
 
-def test_assemble_response_all_unsupported_is_insufficient_evidence_not_empty_string():
+def test_assemble_response_sub_threshold_claim_still_answers_the_question():
+    """The reported bug: "what is pipelining" scored 0.489 against its best
+    chunk and the caller got INSUFFICIENT_EVIDENCE_MESSAGE instead of the
+    answer the model had already written from the retrieved context."""
     verdicts = [
         ClaimVerdict(
-            text="Rejected one.",
+            text="Pipelining breaks instructions into units executed in parallel.",
             status="UNSUPPORTED",
-            citations=[],
-            evidence_score=None,
-            chunk_ids=[],
-            reason="no citation provided",
+            citations=["C1"],
+            evidence_score=0.489,
+            chunk_ids=["1:12"],
+            reason="best entailment score 0.489 on [C1] is below threshold 0.550",
         ),
+    ]
+
+    response = assemble_response("what is pipelining", verdicts, ["1:12"])
+
+    assert response.state == "ok"
+    assert "Pipelining breaks instructions" in response.answer
+    assert response.answer != INSUFFICIENT_EVIDENCE_MESSAGE
+    # The score that used to suppress it is still on the record, so a caller
+    # that wants to hedge on it can, and the eval harness can still see it.
+    assert response.rejected_claims[0].evidence_score == 0.489
+
+
+def test_assemble_response_contradicted_is_still_withheld_from_the_answer():
+    """Not covered by the threshold change: the evidence actively disagrees
+    here, which is a finding, not a failure to confirm."""
+    verdicts = [
         ClaimVerdict(
-            text="Rejected two.",
+            text="Contradicted claim.",
             status="CONTRADICTED",
             citations=["C1"],
             evidence_score=0.8,
@@ -380,9 +401,9 @@ def test_assemble_response_all_unsupported_is_insufficient_evidence_not_empty_st
 
     assert response.state == "insufficient_evidence"
     assert response.answer == INSUFFICIENT_EVIDENCE_MESSAGE
-    assert response.answer != ""
-    # Audit trail still carries both rejected claims with their reasons.
-    assert {c.text for c in response.claims} == {"Rejected one.", "Rejected two."}
+    assert "Contradicted claim." not in response.answer
+    # Audit trail still carries it with its reason.
+    assert response.claims[0].reason == "cited chunk [C1] contradicts the claim"
 
 
 def test_assemble_response_no_claims_at_all_is_insufficient_evidence():

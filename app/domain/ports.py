@@ -32,14 +32,41 @@ from typing import Iterator, Literal, Protocol, runtime_checkable
 from app.domain.models import (
     Chunk,
     Claim,
+    ClassifiedInput,
     DocumentRecord,
     IngestionResult,
+    ScoringEvent,
     StoredChunk,
 )
 
 # The three NLI classes, and the sentinel `_score_citations` records when a
 # claim cites a tag that resolves to no chunk.
 NLILabel = Literal["contradiction", "entailment", "neutral"]
+
+
+# --- Classification ----------------------------------------------------------
+
+
+class InputClassifier(Protocol):
+    """Decides whether an input is a question to answer or a fact to check.
+
+    A callable protocol for the same reason `EntailmentScorer` is one: the
+    thing that satisfies it is a single-operation function, so
+    `app.domain.classification.classify_input` *is* an implementation with no
+    wrapper class, and a test substitutes
+    `lambda text: ClassifiedInput(input_type="fact", text=text)` directly.
+
+    Declared here rather than beside the heuristic so the replacement path is
+    already open. Today's implementation is pure string inspection and lives
+    in the domain; a model- or LLM-backed one belongs in
+    `app.infrastructure`, would satisfy this protocol identically, and would
+    reach `QueryService` through the same constructor argument — which is the
+    whole reason the seam exists before there is anything to swap.
+    """
+
+    def __call__(self, text: str) -> ClassifiedInput:
+        """Classify `text`, returning the decision and the text to route."""
+        ...
 
 
 # --- Retrieval ---------------------------------------------------------------
@@ -115,6 +142,28 @@ class EntailmentScorer(Protocol):
     def __call__(self, premise: str, hypothesis: str) -> tuple[NLILabel, float]:
         """Return `(label, confidence)`; confidence is a probability in [0, 1]."""
         ...
+
+
+class ScoringObserver(Protocol):
+    """Receives every `(premise, hypothesis)` pair the verifier scored.
+
+    A port, and injected like every other collaborator, for the same reason
+    `app.cli.query` decorates the `Retriever` instead of putting a print
+    statement inside `HybridRetriever`: showing a person what the model read is
+    a property of one entrypoint, and the verifier must keep having no opinion
+    about whether anyone is watching. Production passes nothing.
+
+    Called once per scored citation, in citation order, *before* the §6.2
+    decision runs — so a rejected pair is reported whether or not it ended up
+    mattering to the verdict, which is exactly the case worth seeing.
+
+    Must not raise. `ClaimVerifier` treats this as a side channel and will not
+    let a broken observer take down a verification pass; an observer that
+    throws will have its exception swallowed rather than turn a diagnostic into
+    an outage.
+    """
+
+    def __call__(self, event: ScoringEvent) -> None: ...
 
 
 # --- Persistence -------------------------------------------------------------
@@ -220,8 +269,10 @@ __all__ = [
     "EntailmentScorer",
     "HealthProbe",
     "IngestionResult",
+    "InputClassifier",
     "NLILabel",
     "Reranker",
     "Retriever",
+    "ScoringObserver",
     "SearchIndex",
 ]
