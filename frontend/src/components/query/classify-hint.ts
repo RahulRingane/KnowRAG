@@ -1,6 +1,6 @@
 /**
  * A client-side PREDICTION of which route the backend will take, mirroring
- * `app/domain/classification.py::classify_input` (`rag/`) closely enough to
+ * `app/domain/classification.py::classify_input` (`backend/`) closely enough to
  * be useful as a hint. This is NOT the routing decision — the backend
  * classifies independently and authoritatively on every `POST /query` call,
  * and its answer is what `input_type` on the response reports (rendered by
