@@ -9,10 +9,10 @@ from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, UploadFile, status
 
-from app.api.dependencies import get_ingestion_service
+from app.api.dependencies import get_current_user, get_ingestion_service
 from app.api.dto import IngestAccepted, IngestStatus
 from app.core.exceptions import UnsupportedUpload
-from app.domain.models import DocumentStatus
+from app.domain.models import DocumentStatus, User
 from app.services.ingestion_service import IngestionService
 
 logger = logging.getLogger(__name__)
@@ -25,6 +25,7 @@ async def ingest(
     file: UploadFile,
     background_tasks: BackgroundTasks,
     service: IngestionService = Depends(get_ingestion_service),
+    _user: User = Depends(get_current_user),
 ):
     """Accept a PDF and index it in the background.
 
@@ -95,6 +96,7 @@ def _run_ingestion(
 def ingest_status(
     document_id: int,
     service: IngestionService = Depends(get_ingestion_service),
+    _user: User = Depends(get_current_user),
 ):
     """Report `pending` | `indexed` | `failed` for a previously accepted upload.
 
@@ -102,3 +104,21 @@ def ingest_status(
     a 404 — the route itself does no error mapping.
     """
     return IngestStatus.from_record(service.get_status(document_id))
+
+
+@router.get("/documents", response_model=list[IngestStatus])
+def documents(
+    service: IngestionService = Depends(get_ingestion_service),
+    _user: User = Depends(get_current_user),
+):
+    """List every ingested document, newest first — added for the frontend's
+    document dashboard (WS-0, frontend_plan.md §2), which needs to enumerate
+    the corpus rather than poll one known id.
+
+    Lives beside `GET /ingest/{document_id}` rather than in its own module:
+    both serialize the same tracking row through the same projection, and
+    `IngestStatus.from_record()` is reused here for the reason its docstring
+    gives — `content_hash` is internal and has no business on the wire just
+    because a route now returns many rows instead of one.
+    """
+    return [IngestStatus.from_record(record) for record in service.list_documents()]

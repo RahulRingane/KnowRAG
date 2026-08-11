@@ -16,14 +16,20 @@ from __future__ import annotations
 
 import io
 import json
+from datetime import datetime, timezone
 
 import pytest
 from fastapi.testclient import TestClient
 
 from app import main
-from app.api.dependencies import get_health_service, get_ingestion_service, get_query_service
+from app.api.dependencies import (
+    get_current_user,
+    get_health_service,
+    get_ingestion_service,
+    get_query_service,
+)
 from app.core.exceptions import DocumentNotFound, GenerationUnavailable
-from app.domain.models import ClaimVerdict, DocumentRecord, FactCheckedResponse
+from app.domain.models import ClaimVerdict, DocumentRecord, FactCheckedResponse, User
 from app.services.health_service import HealthService
 
 client = TestClient(main.app)
@@ -36,6 +42,26 @@ client = TestClient(main.app)
 # module a route happens to import. That is the difference the service layer
 # buys: these tests state what the route should do with a given service
 # result, and never mention Postgres, Qdrant, or a provider SDK.
+
+
+@pytest.fixture(autouse=True)
+def _authenticated():
+    """WS-1 (frontend_plan.md §3) put `Depends(get_current_user)` on
+    `/query`, `/query/stream`, `/ingest`, `/ingest/{id}`, `/documents`, and
+    `/chunks` — every route this file's ~24 tests call with no credentials.
+    This file is about route *behaviour* given a service result, not about
+    auth, so the dependency is overridden the same way every service is:
+    `app.dependency_overrides`, not a real bearer token threaded through
+    each test. Asserting that an unauthenticated request is rejected is
+    WS-2's job, not this file's.
+    """
+    main.app.dependency_overrides[get_current_user] = lambda: User(
+        id=1,
+        username="test-user",
+        password_hash="",
+        token_version=0,
+        created_at=datetime.now(timezone.utc),
+    )
 
 
 @pytest.fixture(autouse=True)

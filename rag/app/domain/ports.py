@@ -37,6 +37,7 @@ from app.domain.models import (
     IngestionResult,
     ScoringEvent,
     StoredChunk,
+    User,
 )
 
 # The three NLI classes, and the sentinel `_score_citations` records when a
@@ -197,6 +198,15 @@ class DocumentRepository(Protocol):
         """Create or update the row for a completed chunking pass; return its id."""
         ...
 
+    def list_all(self) -> list[DocumentRecord]:
+        """Every ingested document, newest first — the read side of `GET /documents`.
+
+        Added for the frontend's document dashboard (WS-0, frontend_plan.md
+        §2), which needs to enumerate what's in the corpus; `get()` only
+        answers for one id it already knows.
+        """
+        ...
+
 
 class ChunkRepository(Protocol):
     """Persistence for chunk text."""
@@ -207,6 +217,51 @@ class ChunkRepository(Protocol):
 
     def list_for_document(self, document_id: int | None = None) -> list[StoredChunk]:
         """All chunks for one document, or every chunk when `document_id` is None."""
+        ...
+
+    def get_by_keys(self, keys: list[tuple[int, int]]) -> list[StoredChunk]:
+        """Fetch chunks by their canonical `(document_id, chunk_index)` keys.
+
+        Added for `GET /chunks` (WS-0, frontend_plan.md §2) — the evidence
+        panel's only way to turn a citation like `"1:3"` back into text. A
+        key with no matching row is simply absent from the result rather than
+        an error: a citation list built from a slightly stale response should
+        degrade, not fail the caller. One SELECT, not one per key — a `Chunk`
+        panel with even a handful of citations must not become an N+1 query.
+        """
+        ...
+
+
+# --- Auth (WS-1, frontend_plan.md §3) -----------------------------------------
+
+
+class UserRepository(Protocol):
+    """Persistence for the `users` table.
+
+    `has_users()` is the entire mechanism behind "first user registers, then
+    signup closes" — `AuthService.register()` checks it before writing a new
+    row. It is its own method rather than `len(list_all()) > 0` so an
+    implementation can answer with an indexed existence check instead of a
+    full-table read, and so there never needs to be a `list_all()` on this
+    port at all — nothing in §3 enumerates users.
+    """
+
+    def create(self, username: str, password_hash: str) -> User: ...
+
+    def get_by_username(self, username: str) -> User | None: ...
+
+    def get_by_id(self, user_id: int) -> User | None: ...
+
+    def has_users(self) -> bool: ...
+
+    def increment_token_version(self, user_id: int) -> None:
+        """Revoke every outstanding token for this user — `POST /auth/logout`.
+
+        `AuthService` and `get_current_user` both check a presented token's
+        `ver` claim against the row this reads back, so incrementing it is
+        enough to make every token issued before this call fail verification
+        immediately, with no separate token/session table.
+        """
         ...
 
 
@@ -275,4 +330,5 @@ __all__ = [
     "Retriever",
     "ScoringObserver",
     "SearchIndex",
+    "UserRepository",
 ]

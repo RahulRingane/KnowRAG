@@ -125,6 +125,23 @@ services:
       DATABASE_URL: postgresql://knowrag:knowrag@postgres:5432/knowrag
       QDRANT_URL: http://qdrant:6333
       ES_URL: http://elasticsearch:9200
+      # CORS_ORIGINS is deliberately NOT overridden here, unlike the three
+      # above: it names *frontend* origins (e.g. http://localhost:3000), not
+      # a datastore this container reaches, so there is no host-vs-service-name
+      # split to correct. It flows straight through from `.env` via
+      # `env_file:` above (falling back to Settings' own default if unset) —
+      # see .env.example. Same strict-parsing caveat as every other `.env`
+      # value here: Compose's env_file parser requires `KEY=value` with no
+      # space around `=`, while pydantic-settings tolerates one; a stray
+      # space drops the variable in-container only.
+      #
+      # JWT_SECRET/JWT_ALGORITHM/ACCESS_TOKEN_TTL_MINUTES/
+      # REFRESH_TOKEN_TTL_DAYS/REFRESH_COOKIE_SECURE/REFRESH_COOKIE_SAMESITE
+      # (WS-1 auth) are the same story as CORS_ORIGINS: no host-vs-container
+      # difference, so they are not listed here either — they flow straight
+      # through `env_file:` from `.env`. `JWT_SECRET` has no default in
+      # `Settings`, so the container will fail to boot (loudly, per §3) until
+      # `.env` actually has one — see .env.example for how to generate it.
       # Shared HF/sentence-transformers cache volume mount point (see
       # `model_cache` below) — matches the Dockerfile's ENV defaults, set
       # again here for clarity since this is the load-bearing setting for

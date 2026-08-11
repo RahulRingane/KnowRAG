@@ -14,9 +14,9 @@ import logging
 from fastapi import APIRouter, Depends
 from fastapi.responses import StreamingResponse
 
-from app.api.dependencies import get_query_service
+from app.api.dependencies import get_current_user, get_query_service
 from app.api.dto import QueryRequest
-from app.domain.models import FactCheckedResponse
+from app.domain.models import FactCheckedResponse, User
 from app.services.query_service import QueryService
 
 logger = logging.getLogger(__name__)
@@ -38,6 +38,7 @@ def _sse(event: str, data: dict) -> str:
 def query(
     request: QueryRequest,
     service: QueryService = Depends(get_query_service),
+    _user: User = Depends(get_current_user),
 ):
     """Classify the input, run the route it belongs to, return §6.4's contract.
 
@@ -67,6 +68,7 @@ def query(
 def query_stream(
     request: QueryRequest,
     service: QueryService = Depends(get_query_service),
+    _user: User = Depends(get_current_user),
 ):
     """SSE variant: generation deltas, then verification as a final event (§7).
 

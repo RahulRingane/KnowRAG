@@ -24,10 +24,10 @@ difference. `AliasChoices` is order-sensitive — `GEMINI_API_KEY` wins when
 both are set.
 """
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import AliasChoices, Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AliasChoices, Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -119,6 +119,69 @@ class Settings(BaseSettings):
     top_k_retrieval: int = 20
     top_k_rerank: int = 5
     claim_verification_threshold: float = 0.55
+
+    # Frontend origins allowed to call this API with credentials (WS-0). Never
+    # widen this to "*" — `CORSMiddleware` rejects that combination with
+    # `allow_credentials=True` outright, and it would be the wrong fix anyway:
+    # a refresh cookie is coming in WS-1, and a credentialed wildcard origin
+    # is exactly the CSRF surface cookies are supposed to be scoped away from.
+    #
+    # `NoDecode` opts this field out of pydantic-settings' default behaviour
+    # for list-typed env vars, which is to `json.loads` the raw string before
+    # any validator sees it — so `CORS_ORIGINS=http://a,http://b` would fail
+    # startup with a JSON parse error before `_split_cors_origins` ever ran.
+    # With decoding suppressed, the validator receives the raw string and a
+    # comma-separated list — the format every other multi-value var in this
+    # stack would use if there were one — works the same as a hand-written
+    # `.env` line, no JSON-array quoting required.
+    cors_origins: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: ["http://localhost:3000", "http://localhost:3001"],
+    )
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def _split_cors_origins(cls, value: object) -> object:
+        """Accept `CORS_ORIGINS=http://a,http://b` (comma-separated) in addition
+        to a JSON array. Only a raw env string reaches here — the default
+        value and any already-JSON-decoded list bypass this branch untouched.
+        """
+        if isinstance(value, str):
+            return [origin.strip() for origin in value.split(",") if origin.strip()]
+        return value
+
+    # --- Auth (WS-1, frontend_plan.md §3) -----------------------------------
+    #
+    # Required, no default — on purpose: the alternative is signing every
+    # access and refresh token with a guessable literal baked into the
+    # source, which is worse than a startup crash. Two things follow from
+    # that, both handled at the point they bite:
+    #
+    #   1. `tests/conftest.py` seeds a placeholder before `app.core.config`
+    #      is first imported, the same way it already does for
+    #      `DATABASE_URL`/`GEMINI_API_KEY` — otherwise every test fails to
+    #      collect, not just the auth ones.
+    #   2. The real `rag/.env` needs a generated value appended (never
+    #      committed) before the app will boot at all. See `.env.example`
+    #      for how to generate one.
+    jwt_secret: str
+    jwt_algorithm: str = "HS256"
+    # 15 minutes: short enough that a stolen access token (kept in memory on
+    # the frontend, never persisted per §3.2) has a small window, long
+    # enough that the silent-refresh dance in §3.2 isn't firing constantly.
+    access_token_ttl_minutes: int = 15
+    # 7 days, and rotated on every `/auth/refresh` call (§3.1) — a stale
+    # refresh cookie that never got used expires on its own; one that is
+    # actively being used is replaced each time, so a leaked-but-unused
+    # older cookie stops working the moment the legitimate session refreshes.
+    refresh_token_ttl_days: int = 7
+    # `False`/`"lax"` is correct for local dev over plain http, where
+    # `Secure` would make the browser refuse to ever send the cookie back.
+    # A cross-domain production deploy (frontend and API on different
+    # origins) needs `refresh_cookie_secure=True` with
+    # `refresh_cookie_samesite="none"` — `SameSite=None` is only honoured by
+    # browsers when `Secure` is also set, so the two must change together.
+    refresh_cookie_secure: bool = False
+    refresh_cookie_samesite: Literal["lax", "strict", "none"] = "lax"
 
 
 settings = Settings()

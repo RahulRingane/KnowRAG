@@ -18,6 +18,13 @@ import pytest
 
 os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
 os.environ.setdefault("GEMINI_API_KEY", "test-key-not-a-real-credential")
+# WS-1 (frontend_plan.md §3): `jwt_secret` has no default on purpose — a
+# signing key with a guessable fallback is worse than a startup crash. That
+# means `Settings()` raises unless something sets `JWT_SECRET` before
+# `app.core.config` is first imported, exactly like `DATABASE_URL` and
+# `GEMINI_API_KEY` above; without this line the whole suite fails to
+# collect, not just the auth tests.
+os.environ.setdefault("JWT_SECRET", "test-jwt-secret-not-a-real-credential")
 
 # Pinned, not `setdefault`: this must beat whatever `LLM_PROVIDER` the
 # developer's `.env` carries.

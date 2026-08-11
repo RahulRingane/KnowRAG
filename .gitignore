@@ -25,3 +25,11 @@ data.pdf
 # machine-specific; the numbers that matter are recorded in PLAN.md, and
 # eval/results/baseline.md is the deliberate, committed report.
 eval/*_records.json
+
+# Frontend (frontend/) — installed packages and Next.js build output.
+node_modules/
+.next/
+out/
+frontend/.env.local
+frontend/coverage/
+frontend/*.tsbuildinfo

@@ -48,3 +48,25 @@ class DocumentRow(Base):
     content_hash = Column(String, nullable=False)
     status = Column(String, nullable=False, default=DocumentStatus.PENDING)
     error = Column(Text, nullable=True)
+
+
+class UserRow(Base):
+    """Per WS-1 (`frontend_plan.md` §3): the only table auth needs.
+
+    No sessions/tokens table alongside it — §3's revocation design is
+    `token_version` alone (`POST /auth/logout` increments it; a token whose
+    `ver` claim no longer matches is rejected in `AuthService`), so there is
+    nothing else to persist. `username` is unique at the database level
+    because it doubles as the login identifier, and that constraint is also
+    what closes the race `SqlUserRepository.create()` can't fully close with
+    a check-then-create against `has_users()` alone — a duplicate insert
+    fails here rather than silently creating a second account.
+    """
+
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, nullable=False, unique=True)
+    password_hash = Column(String, nullable=False)
+    token_version = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), nullable=False)
