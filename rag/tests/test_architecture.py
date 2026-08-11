@@ -43,6 +43,13 @@ VENDOR_SDKS = {
     "google",
     "openai",
     "pypdf",
+    # WS-1 auth (frontend_plan.md §3): both live in app/infrastructure/auth/
+    # for exactly this reason — a password hasher and a JWT codec are vendor
+    # SDKs like any other, and `AuthService` (app/services/auth_service.py)
+    # receives their functions through its constructor rather than importing
+    # either at module scope.
+    "bcrypt",
+    "jwt",
 }
 
 

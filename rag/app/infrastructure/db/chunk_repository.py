@@ -11,6 +11,7 @@ They now receive `list[StoredChunk]` and know nothing about Postgres.
 
 from __future__ import annotations
 
+from sqlalchemy import tuple_
 from sqlalchemy.orm import sessionmaker
 
 from app.domain.models import StoredChunk
@@ -67,6 +68,38 @@ class SqlChunkRepository:
                     text=row.chunk_text,
                 )
                 for row in query.all()
+            ]
+        finally:
+            db.close()
+
+    def get_by_keys(self, keys: list[tuple[int, int]]) -> list[StoredChunk]:
+        """Fetch by `(document_id, chunk_index)` in one SELECT.
+
+        `tuple_(...).in_(...)` compiles to a single `WHERE (document_id,
+        chunk_index) IN ((1, 3), (1, 5), ...)` — the efficient-query
+        requirement from frontend_plan.md §2 ruled out looping a `get()`-style
+        call once per citation, which would turn an evidence panel with five
+        citations into five round trips. An empty `keys` short-circuits before
+        touching the database: `tuple_(...).in_(())` is valid SQL but a
+        needless round trip for a request that asked for nothing.
+        """
+        if not keys:
+            return []
+
+        db = self._session_factory()
+        try:
+            rows = (
+                db.query(ChunkRow)
+                .filter(tuple_(ChunkRow.document_id, ChunkRow.chunk_index).in_(keys))
+                .all()
+            )
+            return [
+                StoredChunk(
+                    document_id=row.document_id,
+                    chunk_index=row.chunk_index,
+                    text=row.chunk_text,
+                )
+                for row in rows
             ]
         finally:
             db.close()

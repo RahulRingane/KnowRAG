@@ -50,6 +50,33 @@ def chunk_key(document_id: int, chunk_index: int) -> str:
     return f"{document_id}:{chunk_index}"
 
 
+def parse_chunk_key(key: str) -> tuple[int, int]:
+    """The inverse of `chunk_key()`: `"1:3"` -> `(1, 3)`.
+
+    Added for `GET /chunks` (WS-0, frontend_plan.md §2), which receives
+    exactly the strings `chunk_key()` produces and has to turn them back into
+    the ids a repository query needs. Every other place in this codebase that
+    needs a chunk's identity already has `document_id`/`chunk_index` as
+    separate fields and never had reason to split this string back apart —
+    this is the first caller that does, so this is the first time the inverse
+    needed to exist. Callers must use it rather than `key.split(":")` by hand,
+    same reasoning as `chunk_key()` itself: two independent parsers of this
+    format will eventually disagree about what counts as malformed.
+
+    Raises `ValueError` — not a `KnowRAGError` — because this module imports
+    nothing from any other layer (see the module docstring). The service
+    layer that calls this is where a malformed key becomes the domain
+    exception `app.api.errors` maps onto a 400.
+    """
+    document_id_str, sep, chunk_index_str = key.partition(":")
+    if not sep:
+        raise ValueError(f"Malformed chunk key {key!r}: expected 'documentId:chunkIndex'.")
+    try:
+        return int(document_id_str), int(chunk_index_str)
+    except ValueError as exc:
+        raise ValueError(f"Malformed chunk key {key!r}: expected 'documentId:chunkIndex'.") from exc
+
+
 class ClaimVerdict(BaseModel):
     """Per §6.4, plus `reason`.
 
@@ -248,6 +275,31 @@ class Chunk(BaseModel):
     document_id: int
     chunk_index: int
     text: str
+
+
+# --- Auth vocabulary (WS-1, frontend_plan.md §3) ----------------------------
+
+
+class User(BaseModel):
+    """One registered account.
+
+    Carries `password_hash` and `token_version` because both are genuine
+    domain state, not wire concerns: `AuthService` needs `password_hash` to
+    verify a login attempt, and needs `token_version` to tell whether a
+    presented token was issued before the account's last `POST /auth/logout`
+    (§3's revocation mechanism — logout increments this, and any token whose
+    `ver` claim no longer matches is rejected). Neither belongs on the wire.
+    `UserResponse` (`app.api.dto`) projects only `id`, `username`,
+    `created_at`, the same way `IngestStatus.from_record()` drops
+    `DocumentRecord.content_hash` — a field a repository needs internally is
+    not automatically a field a caller should see.
+    """
+
+    id: int
+    username: str
+    password_hash: str
+    token_version: int = 0
+    created_at: datetime
 
 
 # --- Ingestion-side vocabulary ----------------------------------------------

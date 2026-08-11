@@ -172,3 +172,21 @@ class SqlDocumentRepository:
             raise
         finally:
             db.close()
+
+    def list_all(self) -> list[DocumentRecord]:
+        """Every ingested document, newest first — the read side of `GET /documents`.
+
+        Ordered by `ingested_at` descending so a dashboard's default view is
+        "what changed most recently" without the caller having to sort. This
+        is a full-table `SELECT`, which is fine at this corpus's scale — the
+        cap-and-single-query concern that shaped `ChunkRepository.get_by_keys()`
+        does not apply here because there is no caller-supplied id list to
+        bound; a document count large enough for that to matter would call
+        for pagination, which is out of scope for this pass.
+        """
+        db = self._session_factory()
+        try:
+            rows = db.query(DocumentRow).order_by(DocumentRow.ingested_at.desc()).all()
+            return [_to_record(row) for row in rows]
+        finally:
+            db.close()

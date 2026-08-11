@@ -83,3 +83,72 @@ class UnsupportedUpload(KnowRAGError):
     API layer's job, and the service layer that raises it does not know it is
     being called over HTTP.
     """
+
+
+class InvalidChunkSelection(KnowRAGError):
+    """`GET /chunks`'s `ids` parameter is malformed or exceeds the cap.
+
+    Raised by `app.services.corpus_service.CorpusService.get_chunks()`, same
+    pattern as `UnsupportedUpload`: the service layer decides *that* the
+    request is invalid, `app.api.errors` decides that means 400, and neither
+    layer has to know about the other's concern to do its part.
+
+    Deliberately distinct from "some of the requested chunks don't exist" —
+    that case is not an error at all (unknown keys are silently omitted from
+    the response, per §2 of frontend_plan.md), so it never reaches an
+    exception. This one fires only for a key the parser cannot make sense of,
+    or a request asking for more ids than `MAX_CHUNK_IDS` — both caller bugs,
+    not corpus state.
+    """
+
+
+# --- Auth (WS-1, frontend_plan.md §3) ---------------------------------------
+
+
+class RegistrationClosed(KnowRAGError):
+    """`POST /auth/register` was called after the first account already exists.
+
+    "First user registers, then signup closes" (§3) needs exactly this one
+    bit of state, and `AuthService.register()` reads it from
+    `UserRepository.has_users()` before writing a row. Also raised by
+    `SqlUserRepository.create()` on a duplicate-username `IntegrityError` —
+    that only fires on a genuine race between two concurrent first
+    registrations, since normal duplicate-username attempts never reach
+    `create()` once `has_users()` is true. Either way "an account already
+    exists" is the caller-facing truth, so both paths raise the same type.
+    """
+
+    def __init__(self):
+        super().__init__("Registration is closed: an account already exists.")
+
+
+class InvalidCredentials(KnowRAGError):
+    """`POST /auth/login` failed — unknown username or wrong password.
+
+    Carries no detail distinguishing the two cases, and deliberately so:
+    `AuthService.login()` is required to spend the same wall-clock time
+    (and hash a dummy password) whether the username exists or not, so a
+    per-case message would immediately undo what the timing-safety work is
+    for. There is exactly one reason this can be raised, from the caller's
+    point of view.
+    """
+
+    def __init__(self):
+        super().__init__("Invalid username or password.")
+
+
+class InvalidToken(KnowRAGError):
+    """A bearer or refresh token failed to verify.
+
+    One type covers every way that can happen — missing, malformed, expired,
+    signed with the wrong `typ` (an access token presented where a refresh
+    token was expected, or vice versa — see `app.infrastructure.auth.tokens`),
+    or a `ver` claim that no longer matches the user's current
+    `token_version` because `POST /auth/logout` revoked it since the token
+    was issued. All of them are the same fact from the caller's side: this
+    token no longer authenticates anyone, so `app.api.errors` maps every one
+    of them to the same 401.
+    """
+
+    def __init__(self, message: str = "Invalid or expired token."):
+        super().__init__(message)

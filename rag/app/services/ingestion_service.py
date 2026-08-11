@@ -62,6 +62,15 @@ class IngestionService:
             raise DocumentNotFound(document_id)
         return record
 
+    def list_documents(self) -> list[DocumentRecord]:
+        """Enumerate every ingested document, newest first — `GET /documents`.
+
+        Same concern as `get_status()`, many rows instead of one: both are
+        read paths over the same tracking table, so this lives beside it
+        rather than in a service of its own.
+        """
+        return self._documents.list_all()
+
     # --- the pipeline -------------------------------------------------------
 
     def ingest(

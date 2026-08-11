@@ -46,6 +46,13 @@ dependencies = [
     # §9's six metrics are specified as "Prometheus-style counters/
     # histograms"; this is the reference client for that exposition format.
     "prometheus-client>=0.20",
+    # Auth (WS-1, frontend_plan.md §3). `bcrypt.hashpw`/`checkpw` is a
+    # two-function API and needs no wrapper library — deliberately not
+    # `passlib`, which is unmaintained and raises `AttributeError: module
+    # 'bcrypt' has no attribute '__about__'` against bcrypt >= 4.1.
+    "bcrypt>=4.1",
+    # PyJWT, not python-jose: better maintained. Imported as `jwt`.
+    "PyJWT>=2.9",
 ]
 
 [project.optional-dependencies]

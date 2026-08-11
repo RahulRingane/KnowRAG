@@ -17,15 +17,17 @@ this package, and nothing else.
 
 from fastapi import APIRouter
 
-from app.api.routes import ingest, query, system
+from app.api.routes import auth, corpus, ingest, query, system
 
 
 def build_router() -> APIRouter:
     """Every route in the application, assembled in one place."""
     router = APIRouter()
     router.include_router(system.router)
+    router.include_router(auth.router)
     router.include_router(ingest.router)
     router.include_router(query.router)
+    router.include_router(corpus.router)
     return router
 
 
