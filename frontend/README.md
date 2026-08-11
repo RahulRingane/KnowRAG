@@ -39,7 +39,7 @@ missing URL fails loudly instead of producing silent fetch failures. This is
 the **only** file that reads `process.env`; nothing else in the app should.
 
 - `8000` — the backend's `app` container (`docker compose up -d`).
-- `8001` — a host-side `uvicorn --reload` dev server (`../rag/`'s
+- `8001` — a host-side `uvicorn --reload` dev server (`../backend/`'s
   hot-reload workflow; the container does not hot-reload).
 
 ## Run the backend
@@ -48,7 +48,7 @@ The frontend talks to the KnowRAG API over HTTP — nothing works without it
 running and reachable from the browser:
 
 ```bash
-cd ../rag
+cd ../backend
 docker compose up -d
 ```
 

@@ -56,10 +56,10 @@ POST /query  {"question": "What is an embedded system?"}
 
 ## Run it locally (after cloning)
 
-This is a monorepo: **`rag/`** is the backend (FastAPI + the datastores, with
-its own `docker-compose.yml` and `.env`) and **`frontend/`** is the Next.js UI
-with its own `.env.local`. Every backend command below is run from `rag/`, not
-from the repo root.
+This is a monorepo: **`backend/`** (formerly `rag/`) is the FastAPI service and
+the datastores, with its own `docker-compose.yml` and `.env`; **`frontend/`**
+is the Next.js UI with its own `.env.local`. Every backend command below is run
+from `backend/`, not from the repo root.
 
 Needs Docker Compose v2, ~4 GB free RAM, one LLM provider key (Gemini or
 OpenAI), and Node 22+ for the UI; Python 3.11+ only for host-side CLI/tests.
@@ -75,7 +75,7 @@ cd KnowRAG
 ### 2. Backend config
 
 ```bash
-cd rag
+cd backend
 cp .env.example .env
 python -c "import secrets; print(secrets.token_urlsafe(48))"   # -> JWT_SECRET
 $EDITOR .env    # set GEMINI_API_KEY (or OPENAI_API_KEY + LLM_PROVIDER=openai)
@@ -151,7 +151,7 @@ step 4 if you'd rather not use curl.
 ### Tearing down
 
 ```bash
-cd rag
+cd backend
 docker compose down          # stop, keep data
 docker compose down -v       # also DESTROY pgdata, qdrant, es and the model cache
 ```
@@ -163,7 +163,7 @@ for retrieval. Ingestion is idempotent (an unchanged `content_hash`
 short-circuits chunking); `app.cli.index` rebuilds a search index from Postgres
 without re-reading the PDF.
 
-Run these from `rag/` with the host venv active (see
+Run these from `backend/` with the host venv active (see
 [Development](#development)) — they talk to the datastores directly, so
 `docker compose up -d postgres qdrant elasticsearch` is enough; the `app`
 container is not needed and there is no token to pass.
@@ -302,8 +302,8 @@ re-run `eval/` before and after touching either.
 ## Configuration
 
 `app/core/config.py` is the **only** module permitted to read the environment,
-and the architecture test enforces that. `.env` is read from `rag/` or
-`rag/app/.env`; anything not listed has a working default there.
+and the architecture test enforces that. `.env` is read from `backend/` or
+`backend/app/.env`; anything not listed has a working default there.
 
 | Variable | Default | Notes |
 |---|---|---|
@@ -324,7 +324,7 @@ retrieved_chunk_ids, model)`.
 
 ## Development
 
-Backend, from `rag/`:
+Backend, from `backend/`:
 
 ```bash
 python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
@@ -350,7 +350,7 @@ report it rather than triggering a restart loop.
 
 ## Data and evaluation
 
-`rag/data.pdf` is the corpus — 28 pages of Embedded Systems notes,
+`backend/data.pdf` is the corpus — 28 pages of Embedded Systems notes,
 `document_id=1` → **42 chunks** — and is **gitignored** (3.7 MB personal
 document), so a clean checkout has none. `eval/` holds a hand-authored golden
 set: 39 answerable retrieval questions and 16 adversarial "trap" questions.
@@ -367,7 +367,7 @@ Method and history in `eval/results/baseline.md`.
 > entirely — `eval/retrieval_set.jsonl` has no statement items.
 
 ```bash
-cd rag    # the compose file and eval/ both live here
+cd backend    # the compose file and eval/ both live here
 docker compose run --rm --no-deps -v "$PWD/eval:/app/eval" \
     --entrypoint python app -m eval.run_retrieval_eval      # or run_faithfulness_eval
 ```

@@ -160,7 +160,7 @@ class Settings(BaseSettings):
     #      is first imported, the same way it already does for
     #      `DATABASE_URL`/`GEMINI_API_KEY` — otherwise every test fails to
     #      collect, not just the auth ones.
-    #   2. The real `rag/.env` needs a generated value appended (never
+    #   2. The real `backend/.env` needs a generated value appended (never
     #      committed) before the app will boot at all. See `.env.example`
     #      for how to generate one.
     jwt_secret: str
