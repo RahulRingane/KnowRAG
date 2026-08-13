@@ -4,12 +4,12 @@ A fact-checking RAG system. It answers strictly from retrieved evidence and mark
 
 ## How it works
 
-Every input is classified once, up front, and takes exactly one route:
+Every input is classified once, up front, into one of two routes — there's no third path and no re-routing mid-request:
 
-```
-"what is RISC?"                   → question → answered from the corpus
-"RISC has instruction pipelining" → fact     → the caller's own sentence checked
-```
+- **Question** (e.g. `"what is RISC?"`) → the system retrieves evidence and **generates an answer** from the corpus, then verifies its own generated claims against what it cited.
+- **Statement / fact** (e.g. `"RISC has instruction pipelining"`) → the caller's own sentence is checked as written. Retrieval still runs, but there's **no generation call at all** — the line is NLI-scored directly against the retrieved chunks, and the verdict (`SUPPORTED` / `CONTRADICTED` / `UNSUPPORTED`) is the answer.
+
+Classification is a simple heuristic (trailing `?`, or a first word from a closed interrogative set like `what`/`is`/`does`/`has`) — not a model call. Ambiguous input defaults to the fact route on purpose, since mis-routing a question just produces a visibly odd verdict, while mis-routing a statement would silently check the wrong sentence.
 
 ```
 POST /query  {"question": "What is an embedded system?"}
@@ -25,14 +25,16 @@ POST /query  {"question": "What is an embedded system?"}
 
 ```
 query:  input → classify ┬→ "question" → retrieve (once) → generate → verify → assemble
-                         └→ "fact"     → retrieve (once) → verify → assemble  (no generation call)
+                          │              (system generates the answer, then fact-checks it)
+                          └→ "fact"     → retrieve (once) → verify → assemble
+                                         (caller's own line is fact-checked directly — no generation)
 ```
 
 ## Features
 
 - **Hybrid retrieval** — Qdrant (dense, `bge-base-en-v1.5`) and Elasticsearch (BM25) each return top candidates; deduped and cross-encoder reranked before the LLM sees anything.
 - **Claim-level verification** — generation returns structured `{kind, text, citations}` objects, never free prose. Each claim is scored against its cited chunk by a dedicated NLI model — relevance (reranker) and entailment (NLI) are never collapsed into one signal.
-- **Two input routes, no re-entry** — a question is answered from the corpus; a statement is NLI-scored as written against retrieved chunks with no generation call. The fork is taken once; retrieval still runs exactly once per request either way.
+- **Two input routes, no re-entry** — a question triggers generation and gets answered from the corpus; a plain statement/line skips generation entirely and is NLI-scored as written against retrieved chunks. The fork is taken once; retrieval still runs exactly once per request either way.
 - **Traceable evidence** — `document_id:chunk_index` is the join key between a claim's `chunk_ids` and the response's `retrieved_chunk_ids`, all the way back to the Elasticsearch/Qdrant record.
 - **No agentic loop, by design** — one retrieval round, at most one generation call, one verification pass. No path back to re-retrieve.
 - **Observability built in** — per-stage Prometheus histograms and verdict counters at `/metrics`, JSON logs with trace IDs, `/health` checks all three datastores, and every response carries a disjoint per-stage `latency_ms` breakdown that sums to wall time.
@@ -126,8 +128,8 @@ Same service code path as the API — one for ingestion, one for retrieval. Inge
 python -m app.cli.ingest data.pdf [--force] [--full-reindex]
 python -m app.cli.index [--document-id N] [--index qdrant|elasticsearch] [--full-reindex]
 python -m app.cli.retrieve                     # interactive hybrid search
-python -m app.cli.query "what is X?"           # question -> answered
-python -m app.cli.query "X has property Y"     # statement -> fact-checked
+python -m app.cli.query "what is X?"           # question -> generates + answers from corpus
+python -m app.cli.query "X has property Y"     # plain statement -> fact-checked as written, no generation
                                                 # --json, -q (answer only), -v (stage logs)
 ```
 
@@ -184,6 +186,10 @@ docker compose run --rm --no-deps -v "$PWD/eval:/app/eval" \
 | `ValidationError` at startup, host scripts fine | space around `=` in `.env` — Compose's parser drops it, pydantic-settings doesn't |
 | Retrieval empty, ingestion succeeded | wiped index, Postgres intact — check `localhost:9200/knowrag/_count`, then `app.cli.index --full-reindex` |
 | Everything returns `insufficient_evidence` | expected when evidence is missing — confirm corpus is `indexed`; on the question route this means nothing answerable was generated, not a threshold issue |
-| Statement got answered, or question got fact-checked | check `input_type` on the response; classifier is heuristic (trailing `?`, then closed interrogative set), ambiguous input defaults to `fact` |
+| A line got answered when it should've been fact-checked (or vice versa) | check `input_type` on the response; classifier is heuristic (trailing `?`, then closed interrogative set), ambiguous input defaults to `fact`. Add a `?` to force the question route; drop leading `what`/`is`/`has` to force the fact route |
 | Code changes don't take effect in container | image has no `--reload`; use the host venv or `docker compose up -d --build app` |
 | Query unexpectedly slow | read the `timing` line first — `model_load` above ~1s means weights aren't cached where the process is looking |
+
+## License
+
+See `LICENSE`.
