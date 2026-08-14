@@ -189,7 +189,3 @@ docker compose run --rm --no-deps -v "$PWD/eval:/app/eval" \
 | A line got answered when it should've been fact-checked (or vice versa) | check `input_type` on the response; classifier is heuristic (trailing `?`, then closed interrogative set), ambiguous input defaults to `fact`. Add a `?` to force the question route; drop leading `what`/`is`/`has` to force the fact route |
 | Code changes don't take effect in container | image has no `--reload`; use the host venv or `docker compose up -d --build app` |
 | Query unexpectedly slow | read the `timing` line first — `model_load` above ~1s means weights aren't cached where the process is looking |
-
-## License
-
-See `LICENSE`.
