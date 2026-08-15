@@ -20,7 +20,7 @@ Generation: `gpt-4o-mini`, 42-chunk corpus, verifier `MoritzLaurer/DeBERTa-v3-ba
 
 ## Methodology notes
 
-Measured against local compose stack (`notes.pdf`, doc_id 1, **42 chunks**, Postgres/Qdrant/ES).
+Measured against local compose stack (`data.pdf`, doc_id 1, **42 chunks**, Postgres/Qdrant/ES).
 
 **Two variables changed together in the underlying corpus/model work — don't attribute faithfulness gains to one alone without an isolated A/B:**
 1. Generation model swap (older Gemini model → `gpt-4o-mini`)
