@@ -1,9 +1,8 @@
 # KnowRAG Golden Evaluation Set
 
 Labeled data for retrieval and adversarial (faithfulness) evals — see `app/KNowRAG_SPEC.md` §8.2, §8.4.
-Owned by agent A7a (content only; harness code is A7b's).
 
-**Corpus:** `data.pdf` (28 pages, Embedded Systems notes, sections 1.1–1.9.1). Originally spec'd as `example_file.pdf` (never existed); `data.pdf` substituted and pre-approved.
+**Corpus:** `data.pdf` (28 pages, Embedded Systems notes, sections 1.1–1.9.1).
 
 ---
 
@@ -11,7 +10,7 @@ Owned by agent A7a (content only; harness code is A7b's).
 
 Chunk identity = `(document_id, chunk_index)`, formatted via `chunk_key()` in `app/schemas.py`.
 
-A2 was concurrently changing the chunker (`60/15` → `512/64` size/overlap) while this set was authored, so no real chunk IDs existed to label against yet. Hence two phases:
+The chunker settings changed (`60/15` → `512/64` size/overlap) while this set was being authored, so no real chunk IDs existed to label against yet. Hence two phases:
 
 - **Phase 1 (done):** Each item has `source_quote` (verbatim span, normalized text), `source_section`, and `expected_chunk_ids: []`.
 - **Phase 2 (done, via `eval/map_chunk_ids.py`):** After ingestion, map each quote to its actual chunk(s).
